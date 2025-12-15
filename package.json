@@ -1,0 +1,42 @@
+{
+  "name": "mardet-tutoring",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MARDET Language Tutoring Resources Hub - Defense Language Institute",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "fuse.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "gh-pages": "^6.1.0",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
+    "vite": "^5.0.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeranaias/mardetpomtutorapp.git"
+  },
+  "keywords": [
+    "DLI",
+    "DLIFLC",
+    "language-learning",
+    "military",
+    "USMC",
+    "tutoring",
+    "powerapp"
+  ],
+  "author": "USMC Detachment, DLIFLC",
+  "license": "MIT"
+}

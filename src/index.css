@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans text-gray-900 antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-dli-gold text-marine-900 px-6 py-3 rounded-lg font-semibold
+           hover:bg-yellow-400 transition-colors shadow-md hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-marine-900 text-marine-900 px-6 py-3 rounded-lg
+           font-semibold hover:bg-marine-900 hover:text-white transition-colors;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-md p-6 border border-gray-100;
+  }
+
+  .section-title {
+    @apply text-3xl font-bold text-marine-900 mb-6;
+  }
+}
