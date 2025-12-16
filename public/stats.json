@@ -1,0 +1,38 @@
+{
+  "lastUpdated": "2025-12-15T00:00:00Z",
+  "summary": {
+    "totalStudents": 400,
+    "totalTutors": 41,
+    "totalLanguages": 9,
+    "appointmentsThisMonth": 0,
+    "appointmentsThisWeek": 0
+  },
+  "tutorsByLanguage": {
+    "ara": 8,
+    "rus": 6,
+    "cmn": 7,
+    "kor": 5,
+    "fas": 4,
+    "spa": 3,
+    "fra": 2,
+    "ind": 2,
+    "jpn": 4
+  },
+  "studentsByLanguage": {
+    "ara": 89,
+    "rus": 52,
+    "cmn": 78,
+    "kor": 65,
+    "fas": 34,
+    "spa": 28,
+    "fra": 18,
+    "ind": 12,
+    "jpn": 24
+  },
+  "weeklyStats": {
+    "completedSessions": 0,
+    "cancelledSessions": 0,
+    "noShows": 0,
+    "newBookings": 0
+  }
+}

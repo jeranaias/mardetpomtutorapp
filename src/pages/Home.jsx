@@ -1,9 +1,22 @@
 import { Link } from 'react-router-dom'
 import { languages, categories } from '../data/languages'
+import { useStats, formatLastUpdated } from '../hooks/useStats'
 import LanguageCard from '../components/LanguageCard'
 
 export default function Home() {
-  const totalTutors = languages.reduce((sum, lang) => sum + lang.tutorCount, 0)
+  const { stats, loading } = useStats()
+
+  // Use stats from JSON if available, otherwise fall back to calculated values
+  const totalTutors = stats?.summary?.totalTutors ?? languages.reduce((sum, lang) => sum + lang.tutorCount, 0)
+  const totalStudents = stats?.summary?.totalStudents ?? 400
+  const totalLanguages = stats?.summary?.totalLanguages ?? languages.length
+
+  // Merge tutor counts from stats into languages for display
+  const languagesWithStats = languages.map(lang => ({
+    ...lang,
+    tutorCount: stats?.tutorsByLanguage?.[lang.code] ?? lang.tutorCount,
+    studentCount: stats?.studentsByLanguage?.[lang.code] ?? 0
+  }))
 
   return (
     <div className="space-y-12">
@@ -29,19 +42,21 @@ export default function Home() {
       {/* Stats Section */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         <div className="card text-center">
-          <div className="text-3xl md:text-4xl font-bold text-dli-navy mb-2">
-            {languages.length}
+          <div className={`text-3xl md:text-4xl font-bold text-dli-navy mb-2 ${loading ? 'animate-pulse' : ''}`}>
+            {totalLanguages}
           </div>
           <div className="text-sm md:text-base text-gray-600">Languages Supported</div>
         </div>
         <div className="card text-center">
-          <div className="text-3xl md:text-4xl font-bold text-dli-navy mb-2">
+          <div className={`text-3xl md:text-4xl font-bold text-dli-navy mb-2 ${loading ? 'animate-pulse' : ''}`}>
             {totalTutors}
           </div>
           <div className="text-sm md:text-base text-gray-600">Active Tutors</div>
         </div>
         <div className="card text-center">
-          <div className="text-3xl md:text-4xl font-bold text-dli-navy mb-2">~400</div>
+          <div className={`text-3xl md:text-4xl font-bold text-dli-navy mb-2 ${loading ? 'animate-pulse' : ''}`}>
+            ~{totalStudents}
+          </div>
           <div className="text-sm md:text-base text-gray-600">Students Served</div>
         </div>
         <div className="card text-center">
@@ -49,6 +64,13 @@ export default function Home() {
           <div className="text-sm md:text-base text-gray-600">Resource Access</div>
         </div>
       </section>
+
+      {/* Last Updated Notice */}
+      {stats?.lastUpdated && (
+        <div className="text-center text-sm text-gray-500">
+          Stats last updated: {formatLastUpdated(stats.lastUpdated)}
+        </div>
+      )}
 
       {/* Languages by Category */}
       <section id="languages" className="space-y-8">
@@ -62,7 +84,7 @@ export default function Home() {
               {category}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {languages
+              {languagesWithStats
                 .filter(lang => languageCodes.includes(lang.code))
                 .map(lang => (
                   <LanguageCard key={lang.code} language={lang} />
@@ -72,6 +94,31 @@ export default function Home() {
           </div>
         ))}
       </section>
+
+      {/* Weekly Activity - only show if we have real data */}
+      {stats?.weeklyStats && stats.weeklyStats.completedSessions > 0 && (
+        <section className="card bg-green-50 border border-green-200">
+          <h2 className="text-xl font-bold text-marine-900 mb-4">This Week's Activity</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold text-green-700">{stats.weeklyStats.completedSessions}</div>
+              <div className="text-sm text-gray-600">Sessions Completed</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-blue-700">{stats.weeklyStats.newBookings}</div>
+              <div className="text-sm text-gray-600">New Bookings</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-yellow-700">{stats.weeklyStats.cancelledSessions}</div>
+              <div className="text-sm text-gray-600">Cancellations</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-red-700">{stats.weeklyStats.noShows}</div>
+              <div className="text-sm text-gray-600">No-Shows</div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Quick Links Section */}
       <section className="bg-marine-800 text-white rounded-lg p-8">
