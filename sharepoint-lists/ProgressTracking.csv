@@ -1,0 +1,6 @@
+ProgressID,StudentName,SnapshotDate,CurrentGrade,DLPTListening,DLPTReading,ModularExams,OPIScore,AttendanceRate,TutoringHours,Trends,Goals,Notes
+1,James Wilson,2025-12-01,B+,1+,1+,Mod1: 85 Mod2: 88,1+,95,12,Improving,Achieve 2/2 by graduation,Strong improvement in grammar
+2,Emily Brown,2025-12-01,A-,2,1+,Mod1: 92 Mod2: 90,2,98,8,Stable,Maintain 2+/2,Consistent performer
+3,Michael Davis,2025-12-01,B,1,1,Mod1: 78 Mod2: 80,1,88,15,Improving,Achieve 2/1+ by graduation,Needs more reading practice
+4,Sarah Johnson,2025-12-01,A,2,2,Mod1: 95 Mod2: 94,2,100,6,Stable,Achieve 2+/2+,Top performer
+5,David Lee,2025-12-01,B+,1+,1+,Mod1: 86 Mod2: 84,1+,92,10,Improving,Achieve 2/2 by graduation,Good speaking skills

@@ -1,0 +1,4 @@
+NoteID,StudentName,TutorName,SessionDate,ActualDuration,MaterialsCovered,StudentPerformance,FocusAreas,HomeworkAssigned,NextSessionGoals,StudentParticipation,ChallengesObserved,Recommendations,AttachedResources
+1,James Wilson,John Smith,2025-12-14 09:00,55,Chapter 5 vocabulary review and grammar exercises,Good,Vocab;Grammar,Complete exercises 5.1-5.5,Continue grammar focus,Engaged,Struggles with verb conjugation,Extra practice on Form I verbs,vocab_list_ch5.pdf
+2,David Lee,John Smith,2025-12-15 14:00,45,Conversational practice - market scenario,Excellent,Speaking,Record 3 minute dialogue,Move to complex scenarios,Engaged,None noted,Ready for advanced topics,
+3,Emily Brown,Ivan Petrov,2025-12-10 10:00,40,Listening comprehension - news broadcast,Satisfactory,Listening,Listen to 2 podcasts,Improve speed recognition,Average,Fast speech recognition,Use slower audio sources first,podcast_links.txt

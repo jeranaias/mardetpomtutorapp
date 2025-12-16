@@ -1,0 +1,9 @@
+AppointmentID,StudentName,TutorName,AppointmentDate,Duration,Status,Location,MeetingLink,FocusArea,CancellationReason,CreatedByStudent,ReminderSent,BookingNotes
+1,James Wilson,John Smith,2025-12-16 09:00,60,Scheduled,Tutoring Center,,Vocab;Grammar,,TRUE,TRUE,First session - vocab assessment
+2,Emily Brown,Ivan Petrov,2025-12-16 10:00,45,Scheduled,Online,https://teams.microsoft.com/meet123,Listening,,TRUE,TRUE,
+3,Michael Davis,Wei Chen,2025-12-16 13:00,60,Scheduled,Tutoring Center,,Reading;Writing,,FALSE,TRUE,Instructor requested
+4,Sarah Johnson,Kim Park,2025-12-17 09:00,60,Scheduled,Classroom,,DLPT Prep,,TRUE,FALSE,
+5,David Lee,John Smith,2025-12-15 14:00,45,Completed,Tutoring Center,,Speaking,,TRUE,TRUE,
+6,James Wilson,John Smith,2025-12-14 09:00,60,Completed,Tutoring Center,,Grammar,,TRUE,TRUE,Good progress
+7,Emily Brown,Ivan Petrov,2025-12-13 10:00,45,Cancelled,Online,,Listening,Student sick,TRUE,TRUE,
+8,Michael Davis,Wei Chen,2025-12-12 13:00,60,NoShow,Tutoring Center,,Reading,,FALSE,TRUE,

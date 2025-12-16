@@ -1,0 +1,6 @@
+StudentID,FullName,Email,Rank,Language,Class,CurrentGrade,CAC_EDIPI,PhoneNumber,Company,Platoon,Squad,EnrollmentDate,GraduationDate,Status,Notes
+1,James Wilson,james.wilson@mail.mil,LCpl,Arabic,ARA-001-2025,B+,2234567890,831-555-0201,Alpha,1,1,2025-01-06,2026-06-15,Active,
+2,Emily Brown,emily.brown@mail.mil,Cpl,Russian,RUS-002-2025,A-,2234567891,831-555-0202,Bravo,1,2,2025-01-06,2026-06-15,Active,
+3,Michael Davis,michael.davis@mail.mil,PFC,Chinese,CMN-001-2025,B,2234567892,831-555-0203,Charlie,2,1,2025-01-06,2026-12-15,Active,
+4,Sarah Johnson,sarah.johnson@mail.mil,LCpl,Korean,KOR-001-2025,A,2234567893,831-555-0204,Alpha,2,2,2025-01-06,2026-06-15,Active,
+5,David Lee,david.lee@mail.mil,Sgt,Farsi,FAS-001-2025,B+,2234567894,831-555-0205,Delta,1,1,2025-01-06,2026-06-15,Active,

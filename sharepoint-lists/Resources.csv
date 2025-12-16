@@ -1,0 +1,10 @@
+ResourceID,Title,Language,ResourceType,Description,URL,DifficultyLevel,Tags,ViewCount,Featured,Active
+1,Arabic Vocabulary Builder,Arabic,Vocab,Comprehensive vocabulary lists organized by topic,https://example.com/arabic-vocab,Beginner,vocabulary;flashcards;beginner,245,TRUE,TRUE
+2,Russian Grammar Guide,Russian,Grammar,Complete grammar reference with exercises,https://example.com/russian-grammar,Intermediate,grammar;reference;exercises,189,TRUE,TRUE
+3,Chinese Listening Practice,Chinese,Listening,Audio files with transcripts for listening practice,https://example.com/chinese-listening,Intermediate,listening;audio;transcripts,156,FALSE,TRUE
+4,Korean DLPT Practice Tests,Korean,DLPT Practice,Practice tests modeled on actual DLPT format,https://example.com/korean-dlpt,Advanced,dlpt;practice;test,312,TRUE,TRUE
+5,Farsi Reading Comprehension,Farsi,Reading,Graded reading passages with comprehension questions,https://example.com/farsi-reading,Beginner,reading;comprehension;graded,98,FALSE,TRUE
+6,Spanish Conversation Starters,Spanish,Speaking,Dialogue prompts and conversation scenarios,https://example.com/spanish-speaking,Beginner,speaking;dialogue;conversation,134,FALSE,TRUE
+7,French Writing Workshop,French,Writing,Writing exercises and composition guides,https://example.com/french-writing,Intermediate,writing;composition;exercises,67,FALSE,TRUE
+8,Japanese Kanji Study,Japanese,Vocab,Kanji recognition and writing practice,https://example.com/japanese-kanji,Advanced,kanji;writing;recognition,201,TRUE,TRUE
+9,Indonesian Grammar Basics,Indonesian,Grammar,Introduction to Indonesian grammar structures,https://example.com/indonesian-grammar,Beginner,grammar;basics;introduction,45,FALSE,TRUE
