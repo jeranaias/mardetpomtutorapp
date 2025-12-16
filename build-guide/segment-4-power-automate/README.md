@@ -17,13 +17,17 @@ Before starting:
 
 | # | Flow Name | Trigger | Build Time |
 |---|-----------|---------|------------|
-| 1 | Appointment Reminder | Scheduled (Daily 6 AM) | 10 min |
-| 2 | Session Notes Nudge | When Appointment status → Completed | 8 min |
-| 3 | Stats Sync to GitHub | Scheduled (Daily) or Manual | 15 min |
-| 4 | Weekly Tutor Digest | Scheduled (Monday 7 AM) | 10 min |
-| 5 | No-Show Alert | When Appointment status → NoShow | 8 min |
+| 1 | Appointment Reminder | Daily 6 AM | 10 min |
+| 2 | Session Notes Nudge | On status → Completed | 8 min |
+| 3 | Stats Sync to GitHub | Daily 5 AM | 15 min |
+| 4 | Weekly Tutor Digest | Monday 7 AM | 10 min |
+| 5 | No-Show Alert | On status → NoShow | 8 min |
+| 6 | 1-Hour Reminder | Hourly | 8 min |
+| 7 | Cancellation Notification | On status → Cancelled | 8 min |
+| 8 | Teams Daily Summary | Daily 7 AM | 8 min |
+| 9 | Monthly Progress Report | 1st of month 8 AM | 12 min |
 
-**Total build time:** ~50 minutes
+**Total build time:** ~90 minutes
 
 ---
 
@@ -687,17 +691,507 @@ Body:
 
 ---
 
+## Flow 6: 1-Hour Reminder
+
+**Purpose:** Send a reminder 1 hour before each appointment.
+
+### Step 1: Create Flow
+
+1. **+ Create** → **Scheduled cloud flow**
+2. Name: `MARDET - 1 Hour Reminder`
+3. Run: **Every hour**
+4. Click **Create**
+
+### Step 2: Calculate Time Window
+
+**Action: Compose - Start Time**
+```
+Name: ComposeStartTime
+Inputs: @{addMinutes(utcNow(), 55)}
+```
+
+**Action: Compose - End Time**
+```
+Name: ComposeEndTime
+Inputs: @{addMinutes(utcNow(), 65)}
+```
+
+### Step 3: Get Appointments in Next Hour
+
+**Action: Get items (SharePoint)**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Appointments
+Filter Query: AppointmentStatus eq 'Scheduled'
+```
+
+### Step 4: Filter to Next Hour Window
+
+**Action: Filter array**
+```
+From: @{outputs('Get_items')?['body/value']}
+Filter:
+  @and(
+    greaterOrEquals(item()?['AppointmentDate'], outputs('ComposeStartTime')),
+    lessOrEquals(item()?['AppointmentDate'], outputs('ComposeEndTime'))
+  )
+```
+
+### Step 5: Loop Through Appointments
+
+**Action: Apply to each**
+```
+Select output: @{body('Filter_array')}
+```
+
+Inside loop:
+
+### Step 6: Get Tutor and Student
+
+**Action: Get item - Tutor**
+```
+List: Tutors
+Id: @{items('Apply_to_each')?['TutorLookupId']}
+```
+
+**Action: Get item - Student**
+```
+List: Students
+Id: @{items('Apply_to_each')?['StudentLookupId']}
+```
+
+### Step 7: Send Reminder to Student
+
+**Action: Send an email (V2)**
+```
+To: @{outputs('Get_item_-_Student')?['body/Email']}
+Subject: ⏰ Tutoring Session in 1 Hour!
+Body:
+```
+
+```html
+<p>Reminder: Your tutoring session starts in about 1 hour!</p>
+
+<table style="border-collapse: collapse; margin: 20px 0;">
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Time:</td>
+    <td style="padding: 8px;">@{formatDateTime(items('Apply_to_each')?['AppointmentDate'], 'h:mm tt')}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Tutor:</td>
+    <td style="padding: 8px;">@{outputs('Get_item_-_Tutor')?['body/FullName']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Location:</td>
+    <td style="padding: 8px;">@{items('Apply_to_each')?['Location/Value']}</td>
+  </tr>
+</table>
+
+<p>Please arrive on time. If you cannot attend, notify your tutor immediately.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 8: Send Reminder to Tutor
+
+**Action: Send an email (V2)**
+```
+To: @{outputs('Get_item_-_Tutor')?['body/Email']}
+Subject: ⏰ Session with @{outputs('Get_item_-_Student')?['body/FullName']} in 1 Hour
+Body:
+```
+
+```html
+<p>Reminder: Your tutoring session starts in about 1 hour!</p>
+
+<table style="border-collapse: collapse; margin: 20px 0;">
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Time:</td>
+    <td style="padding: 8px;">@{formatDateTime(items('Apply_to_each')?['AppointmentDate'], 'h:mm tt')}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Student:</td>
+    <td style="padding: 8px;">@{outputs('Get_item_-_Student')?['body/FullName']} (@{outputs('Get_item_-_Student')?['body/Rank/Value']})</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Language:</td>
+    <td style="padding: 8px;">@{outputs('Get_item_-_Student')?['body/Language/Value']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Location:</td>
+    <td style="padding: 8px;">@{items('Apply_to_each')?['Location/Value']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Focus:</td>
+    <td style="padding: 8px;">@{items('Apply_to_each')?['FocusArea/Value']}</td>
+  </tr>
+</table>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 9: Save
+
+---
+
+## Flow 7: Cancellation Notification
+
+**Purpose:** Notify the other party when an appointment is cancelled.
+
+### Step 1: Create Flow
+
+1. **+ Create** → **Automated cloud flow**
+2. Name: `MARDET - Cancellation Notification`
+3. Trigger: **When an item is created or modified (SharePoint)**
+4. Click **Create**
+
+### Step 2: Configure Trigger
+
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Appointments
+```
+
+### Step 3: Condition - Check for Cancellation
+
+**Action: Condition**
+```
+@{triggerOutputs()?['body/AppointmentStatus/Value']} is equal to Cancelled
+```
+
+**If yes:**
+
+### Step 4: Get Tutor and Student
+
+**Action: Get item - Tutor**
+```
+List: Tutors
+Id: @{triggerOutputs()?['body/TutorLookupId']}
+```
+
+**Action: Get item - Student**
+```
+List: Students
+Id: @{triggerOutputs()?['body/StudentLookupId']}
+```
+
+### Step 5: Check Who Cancelled
+
+**Action: Condition**
+```
+@{triggerOutputs()?['body/CreatedByStudent']} is equal to true
+```
+
+### Step 6A: If Student Cancelled - Notify Tutor
+
+**Action: Send an email (V2)**
+```
+To: @{outputs('Get_item_-_Tutor')?['body/Email']}
+Subject: Appointment Cancelled - @{outputs('Get_item_-_Student')?['body/FullName']}
+Body:
+```
+
+```html
+<p>A tutoring session has been cancelled:</p>
+
+<table style="border-collapse: collapse; margin: 20px 0;">
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Student:</td>
+    <td style="padding: 8px;">@{outputs('Get_item_-_Student')?['body/FullName']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Original Date:</td>
+    <td style="padding: 8px;">@{formatDateTime(triggerOutputs()?['body/AppointmentDate'], 'dddd, MMMM d, yyyy')}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Original Time:</td>
+    <td style="padding: 8px;">@{formatDateTime(triggerOutputs()?['body/AppointmentDate'], 'h:mm tt')}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Reason:</td>
+    <td style="padding: 8px;">@{triggerOutputs()?['body/CancellationReason']}</td>
+  </tr>
+</table>
+
+<p>This time slot is now available for other students.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 6B: If Tutor Cancelled - Notify Student
+
+**Action: Send an email (V2)**
+```
+To: @{outputs('Get_item_-_Student')?['body/Email']}
+Subject: Your Tutoring Session Has Been Cancelled
+Body:
+```
+
+```html
+<p>Your tutoring session has been cancelled:</p>
+
+<table style="border-collapse: collapse; margin: 20px 0;">
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Tutor:</td>
+    <td style="padding: 8px;">@{outputs('Get_item_-_Tutor')?['body/FullName']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Original Date:</td>
+    <td style="padding: 8px;">@{formatDateTime(triggerOutputs()?['body/AppointmentDate'], 'dddd, MMMM d, yyyy')}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Original Time:</td>
+    <td style="padding: 8px;">@{formatDateTime(triggerOutputs()?['body/AppointmentDate'], 'h:mm tt')}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Reason:</td>
+    <td style="padding: 8px;">@{triggerOutputs()?['body/CancellationReason']}</td>
+  </tr>
+</table>
+
+<p>Please book a new session through the app.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 7: Save
+
+---
+
+## Flow 8: Teams Notifications
+
+**Purpose:** Post appointment notifications to a Teams channel for visibility.
+
+### Step 1: Create Flow
+
+1. **+ Create** → **Automated cloud flow**
+2. Name: `MARDET - Teams Daily Summary`
+3. Trigger: **Recurrence** - Daily at 7:00 AM
+4. Click **Create**
+
+### Step 2: Get Today's Appointments
+
+**Action: Get items (SharePoint)**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Appointments
+Filter Query: AppointmentStatus eq 'Scheduled'
+```
+
+### Step 3: Filter to Today
+
+**Action: Filter array**
+```
+From: @{outputs('Get_items')?['body/value']}
+Filter: @startsWith(item()?['AppointmentDate'], formatDateTime(utcNow(), 'yyyy-MM-dd'))
+```
+
+### Step 4: Create Summary Table
+
+**Action: Select**
+```
+From: @{body('Filter_array')}
+Map:
+  Time: @{formatDateTime(item()?['AppointmentDate'], 'h:mm tt')}
+  Duration: @{item()?['Duration']}min
+  Location: @{item()?['Location/Value']}
+```
+
+**Action: Create HTML table**
+```
+From: @{body('Select')}
+Columns: Automatic
+```
+
+### Step 5: Post to Teams
+
+**Action: Post message in a chat or channel**
+```
+Post as: Flow bot
+Post in: Channel
+Team: MARDET Tutoring (select your team)
+Channel: General (or create a "Daily Schedule" channel)
+Message:
+```
+
+```
+📅 **Today's Tutoring Schedule** - @{formatDateTime(utcNow(), 'dddd, MMMM d')}
+
+**Total Sessions:** @{length(body('Filter_array'))}
+
+@{body('Create_HTML_table')}
+
+_Posted automatically by MARDET Tutoring System_
+```
+
+### Step 6: Save
+
+---
+
+## Flow 9: Monthly Progress Report
+
+**Purpose:** Send tutors a monthly summary of their students' progress.
+
+### Step 1: Create Flow
+
+1. **+ Create** → **Scheduled cloud flow**
+2. Name: `MARDET - Monthly Progress Report`
+3. Run: **Monthly** on **1st** at **8:00 AM**
+4. Click **Create**
+
+### Step 2: Get All Active Tutors
+
+**Action: Get items (SharePoint)**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Tutors
+Filter Query: TutorStatus eq 'Active'
+```
+
+### Step 3: Loop Through Tutors
+
+**Action: Apply to each**
+```
+Select output: @{outputs('Get_items')?['body/value']}
+```
+
+Inside loop:
+
+### Step 4: Get Tutor's Completed Sessions Last Month
+
+**Action: Get items - Sessions**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Appointments
+Filter Query: TutorLookupId eq @{items('Apply_to_each')?['ID']} and AppointmentStatus eq 'Completed'
+```
+
+**Action: Filter array - Last Month Only**
+```
+From: @{outputs('Get_items_-_Sessions')?['body/value']}
+Filter: @greaterOrEquals(item()?['AppointmentDate'], addMonths(startOfMonth(utcNow()), -1))
+```
+
+### Step 5: Get Unique Students
+
+**Action: Select - Extract Student IDs**
+```
+From: @{body('Filter_array_-_Last_Month_Only')}
+Map: @{item()?['StudentLookupId']}
+```
+
+**Action: Compose - Unique Students**
+```
+@{union(body('Select_-_Extract_Student_IDs'), body('Select_-_Extract_Student_IDs'))}
+```
+
+### Step 6: Calculate Stats
+
+**Action: Compose - Total Hours**
+```
+@{div(sum(body('Filter_array_-_Last_Month_Only'), 'Duration'), 60)}
+```
+
+**Action: Compose - Session Count**
+```
+@{length(body('Filter_array_-_Last_Month_Only'))}
+```
+
+### Step 7: Get Session Notes for These Sessions
+
+**Action: Get items - Notes**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: SessionNotes
+Filter Query: (filter by date range similar to above)
+```
+
+### Step 8: Build Performance Summary
+
+**Action: Compose - Performance Breakdown**
+```
+{
+  "excellent": @{length(filter(body('Get_items_-_Notes')?['body/value'], item()?['StudentPerformance/Value'], 'Excellent'))},
+  "good": @{length(filter(body('Get_items_-_Notes')?['body/value'], item()?['StudentPerformance/Value'], 'Good'))},
+  "satisfactory": @{length(filter(body('Get_items_-_Notes')?['body/value'], item()?['StudentPerformance/Value'], 'Satisfactory'))},
+  "needsImprovement": @{length(filter(body('Get_items_-_Notes')?['body/value'], item()?['StudentPerformance/Value'], 'Needs Improvement'))}
+}
+```
+
+### Step 9: Send Monthly Report
+
+**Action: Send an email (V2)**
+```
+To: @{items('Apply_to_each')?['Email']}
+Subject: Monthly Tutoring Report - @{formatDateTime(addMonths(utcNow(), -1), 'MMMM yyyy')}
+Body:
+```
+
+```html
+<p>Hi @{items('Apply_to_each')?['FullName']},</p>
+
+<p>Here's your tutoring summary for <strong>@{formatDateTime(addMonths(utcNow(), -1), 'MMMM yyyy')}</strong>:</p>
+
+<h3>📊 Your Stats</h3>
+<table style="border-collapse: collapse; margin: 20px 0; border: 1px solid #ddd;">
+  <tr style="background: #f5f5f5;">
+    <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Total Sessions</td>
+    <td style="padding: 12px; border: 1px solid #ddd; font-size: 24px; font-weight: bold;">@{outputs('Compose_-_Session_Count')}</td>
+  </tr>
+  <tr>
+    <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Total Hours</td>
+    <td style="padding: 12px; border: 1px solid #ddd; font-size: 24px; font-weight: bold;">@{outputs('Compose_-_Total_Hours')}</td>
+  </tr>
+  <tr style="background: #f5f5f5;">
+    <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Unique Students</td>
+    <td style="padding: 12px; border: 1px solid #ddd; font-size: 24px; font-weight: bold;">@{length(outputs('Compose_-_Unique_Students'))}</td>
+  </tr>
+</table>
+
+<h3>📈 Student Performance</h3>
+<table style="border-collapse: collapse; margin: 20px 0; border: 1px solid #ddd;">
+  <tr style="background: #d4edda;">
+    <td style="padding: 10px; border: 1px solid #ddd;">Excellent</td>
+    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">@{json(outputs('Compose_-_Performance_Breakdown'))['excellent']}</td>
+  </tr>
+  <tr style="background: #cce5ff;">
+    <td style="padding: 10px; border: 1px solid #ddd;">Good</td>
+    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">@{json(outputs('Compose_-_Performance_Breakdown'))['good']}</td>
+  </tr>
+  <tr style="background: #fff3cd;">
+    <td style="padding: 10px; border: 1px solid #ddd;">Satisfactory</td>
+    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">@{json(outputs('Compose_-_Performance_Breakdown'))['satisfactory']}</td>
+  </tr>
+  <tr style="background: #f8d7da;">
+    <td style="padding: 10px; border: 1px solid #ddd;">Needs Improvement</td>
+    <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">@{json(outputs('Compose_-_Performance_Breakdown'))['needsImprovement']}</td>
+  </tr>
+</table>
+
+<p>Thank you for your dedication to our Marines' language development!</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 10: Save
+
+---
+
 ## Flow Summary
 
 After building all flows, you should have:
 
-| Flow | Trigger | Status |
-|------|---------|--------|
-| Appointment Reminder | Daily 6 AM | ☐ Built |
-| Session Notes Nudge | On status change | ☐ Built |
-| Stats Sync to GitHub | Daily 5 AM | ☐ Built |
-| Weekly Tutor Digest | Monday 7 AM | ☐ Built |
-| No-Show Alert | On status change | ☐ Built |
+| # | Flow | Trigger | Status |
+|---|------|---------|--------|
+| 1 | Appointment Reminder | Daily 6 AM | ☐ Built |
+| 2 | Session Notes Nudge | On status → Completed | ☐ Built |
+| 3 | Stats Sync to GitHub | Daily 5 AM | ☐ Built |
+| 4 | Weekly Tutor Digest | Monday 7 AM | ☐ Built |
+| 5 | No-Show Alert | On status → NoShow | ☐ Built |
+| 6 | 1-Hour Reminder | Hourly | ☐ Built |
+| 7 | Cancellation Notification | On status → Cancelled | ☐ Built |
+| 8 | Teams Daily Summary | Daily 7 AM | ☐ Built |
+| 9 | Monthly Progress Report | 1st of month 8 AM | ☐ Built |
 
 ---
 
@@ -708,6 +1202,10 @@ After building all flows, you should have:
 - [ ] Run Stats Sync manually, verify GitHub file updated
 - [ ] Run Weekly Digest manually, verify tutor receives schedule
 - [ ] Mark appointment as NoShow, verify NCOIC receives alert
+- [ ] Create appointment in ~1 hour, verify 1-hour reminder sent
+- [ ] Cancel appointment, verify other party notified
+- [ ] Check Teams channel for daily summary
+- [ ] Run Monthly Report manually to test
 
 ---
 
@@ -720,6 +1218,11 @@ After building all flows, you should have:
 - Check spam/junk folders
 - Verify email addresses in SharePoint lists are correct
 - Check "Send an email" action for errors
+
+### Teams messages not posting
+- Verify Teams connection is authenticated
+- Check you have permission to post to the channel
+- Verify Team and Channel names are correct
 
 ### Filter queries not working
 - SharePoint filter syntax is OData. Use `eq` not `=`
@@ -737,28 +1240,13 @@ After building all flows, you should have:
 
 ---
 
-## Optional Enhancements
-
-### 1. Add Teams Notifications
-Replace or supplement emails with Teams messages using "Post message in a chat or channel" action.
-
-### 2. Add 1-Hour Reminder
-Duplicate Flow 1, change schedule to run hourly, filter to appointments in next hour.
-
-### 3. Add Cancellation Notification
-Create new flow triggered on status change to "Cancelled", notify the other party.
-
-### 4. Add Progress Report
-Monthly flow that sends tutors a summary of their students' progress trends.
-
----
-
 ## Connection References
 
 When you first add actions, Power Automate will ask you to sign in to:
 
 - **SharePoint** - Use your @dliflc01.sharepoint.com account
 - **Office 365 Outlook** - Same account
+- **Microsoft Teams** - Same account
 - **HTTP** - No sign-in needed (for GitHub API)
 
 These connections are saved and reused across flows.
