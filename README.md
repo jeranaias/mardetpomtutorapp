@@ -106,7 +106,7 @@ The system supports all DLIFLC language programs including:
 │                                                                  │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │                    AZURE AD                              │   │
-│  │     CAC Authentication │ Security Groups │ RBAC          │   │
+│  │     MFA Authentication │ Security Groups │ RBAC          │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                              │                                   │
 │         ┌────────────────────┼────────────────────┐             │
@@ -139,7 +139,7 @@ The system supports all DLIFLC language programs including:
 | Application | Power Apps Canvas | Main user interface |
 | Automation | Power Automate | Workflows and notifications |
 | Analytics | Power BI | Dashboards and reporting |
-| Authentication | Azure AD + CAC | Identity and access |
+| Authentication | Azure AD + MFA | Identity and access |
 | Email | Exchange Online | Notifications |
 
 ### Data Model
@@ -349,7 +349,7 @@ Week 9   ──► Go-live
 
 ### Security Controls
 
-- **Authentication**: CAC-enabled Azure AD
+- **Authentication**: Azure AD with MFA (dliflc.edu)
 - **Authorization**: Role-based access control (RBAC)
 - **Encryption**: TLS 1.2+ in transit, AES-256 at rest
 - **Audit Logging**: Full activity logging via M365

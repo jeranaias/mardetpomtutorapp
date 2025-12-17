@@ -90,3 +90,6 @@ _site/
 SEGMENT_*_FILES.txt
 PROJECT_COMPLETE_SUMMARY.txt
 FOR_CLAUDE_CODE.md
+
+# Local launch preparation (contains personal config values)
+launch-prep/

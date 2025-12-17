@@ -51,7 +51,7 @@ This policy does **NOT** cover:
 When implementing this system, follow these security guidelines:
 
 ### Authentication
-- Use CAC authentication via Azure AD
+- Use Azure AD authentication with MFA (dliflc.edu accounts)
 - Enforce MFA for all users
 - Use security groups for access control
 - Implement least-privilege access

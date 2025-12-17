@@ -1,6 +1,6 @@
-TutorID,FullName,Email,Rank,Languages,MaxHoursPerWeek,Status,CAC_EDIPI,PhoneNumber,OfficeLocation,Specializations,Bio,HireDate,Notes
-1,John Smith,john.smith@mail.mil,SSgt,Arabic;Farsi,25,Active,1234567890,831-555-0101,Bldg 614 Rm 201,DLPT Prep;Grammar,Experienced Arabic instructor with 5 years teaching,2023-01-15,
-2,Maria Garcia,maria.garcia@mail.mil,GySgt,Spanish;French,20,Active,1234567891,831-555-0102,Bldg 614 Rm 202,Conversation;Listening,,2022-06-01,
-3,Wei Chen,wei.chen@mail.mil,Civilian,Chinese;Japanese,30,Active,1234567892,831-555-0103,Bldg 615 Rm 101,Reading;Writing,Native speaker with linguistics degree,2021-09-15,
-4,Kim Park,kim.park@mail.mil,MSgt,Korean,15,Active,1234567893,831-555-0104,Bldg 615 Rm 102,DLPT Prep,,2020-03-01,
-5,Ivan Petrov,ivan.petrov@mail.mil,SSgt,Russian,25,Active,1234567894,831-555-0105,Bldg 616 Rm 101,Grammar;Vocab,,2023-08-15,
+TutorID,FullName,Email,Rank,Languages,MaxHoursPerWeek,Status,PhoneNumber,OfficeLocation,Specializations,Bio,HireDate,Notes
+1,John Smith,john.smith@dliflc.edu,SSgt,Arabic;Farsi,25,Active,831-555-0101,Bldg 614 Rm 201,DLPT Prep;Grammar,Experienced Arabic instructor with 5 years teaching,2023-01-15,
+2,Maria Garcia,maria.garcia@dliflc.edu,GySgt,Spanish;French,20,Active,831-555-0102,Bldg 614 Rm 202,Conversation;Listening,,2022-06-01,
+3,Wei Chen,wei.chen@dliflc.edu,Civilian,Chinese;Japanese,30,Active,831-555-0103,Bldg 615 Rm 101,Reading;Writing,Native speaker with linguistics degree,2021-09-15,
+4,Kim Park,kim.park@dliflc.edu,MSgt,Korean,15,Active,831-555-0104,Bldg 615 Rm 102,DLPT Prep,,2020-03-01,
+5,Ivan Petrov,ivan.petrov@dliflc.edu,SSgt,Russian,25,Active,831-555-0105,Bldg 616 Rm 101,Grammar;Vocab,,2023-08-15,

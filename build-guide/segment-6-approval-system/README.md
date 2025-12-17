@@ -108,7 +108,7 @@ List Name: ApprovalRequests
 ```
 Approval type: Approve/Reject - First to respond
 Title: Extended Session Request - @{triggerOutputs()?['body/Title']}
-Assigned to: ncoic@mail.mil (replace with actual NCOIC email)
+Assigned to: ncoic@dliflc.edu (replace with actual NCOIC email)
 Details:
 ```
 
@@ -238,7 +238,7 @@ List Name: ApprovalRequests
 ```
 Approval type: Approve/Reject - First to respond
 Title: [Level 1] Off-Hours Request - @{triggerOutputs()?['body/Title']}
-Assigned to: ncoic@mail.mil
+Assigned to: ncoic@dliflc.edu
 Details:
 ```
 
@@ -271,7 +271,7 @@ Details:
 ```
 Approval type: Approve/Reject - First to respond
 Title: [Level 2] Off-Hours Request - @{triggerOutputs()?['body/Title']}
-Assigned to: oic@mail.mil
+Assigned to: oic@dliflc.edu
 Details:
 ```
 
@@ -342,7 +342,7 @@ List Name: ApprovalRequests
 ```
 Approval type: Approve/Reject - First to respond
 Title: Special Accommodation Request - @{triggerOutputs()?['body/Title']}
-Assigned to: oic@mail.mil
+Assigned to: oic@dliflc.edu
 Details:
 ```
 
@@ -399,7 +399,7 @@ List Name: ApprovalRequests
 ```
 Approval type: Approve/Reject - First to respond
 Title: Resource Request - @{triggerOutputs()?['body/Title']}
-Assigned to: budget@mail.mil (replace with actual budget approver)
+Assigned to: budget@dliflc.edu (replace with actual budget approver)
 Details:
 ```
 
@@ -467,10 +467,9 @@ OnSelect:
             Priority: {Value: drpPriority.Selected.Value},
             RelatedStudentID: If(varIsStudent, varStudentRecord.ID, 0),
             ApproverEmail: Switch(drpRequestType.Selected.Value,
-                "Extended Session", "ncoic@mail.mil",
-                "Off-Hours Session", "ncoic@mail.mil",
-                "Special Accommodation", "oic@mail.mil",
-                "Resource Request", "budget@mail.mil"
+                "Extended Session", "ncoic@dliflc.edu",
+                "Off-Hours Session", "ncoic@dliflc.edu",
+                "Special Accommodation", "oic@dliflc.edu"
             )
         }
     );

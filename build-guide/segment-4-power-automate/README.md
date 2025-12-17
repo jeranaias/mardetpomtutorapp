@@ -26,8 +26,12 @@ Before starting:
 | 7 | Cancellation Notification | On status → Cancelled | 8 min |
 | 8 | Teams Daily Summary | Daily 7 AM | 8 min |
 | 9 | Monthly Progress Report | 1st of month 8 AM | 12 min |
+| 10 | Student Registration | Form submission | 10 min |
+| 11 | Tutor Registration | Form submission | 10 min |
+| 12 | Auto-Deactivation | Daily 1 AM | 12 min |
+| 13 | Inactivity Warning | Daily 2 AM | 8 min |
 
-**Total build time:** ~90 minutes
+**Total build time:** ~120 minutes
 
 ---
 
@@ -611,7 +615,7 @@ Id: @{triggerOutputs()?['body/TutorLookupId']}
 
 **Action: Send an email (V2)**
 ```
-To: ncoic@mail.mil (replace with actual NCOIC email)
+To: ncoic@dliflc.edu (replace with actual NCOIC email)
 CC: (optional - add OIC or others)
 Subject: [NO-SHOW] Tutoring Session - @{outputs('Get_item_-_Student')?['body/FullName']}
 Body:
@@ -1177,6 +1181,600 @@ Body:
 
 ---
 
+## Flow 10: Student Registration
+
+**Purpose:** Allow students to self-register via Microsoft Forms with NCOIC approval.
+
+### Prerequisites: Create Microsoft Form
+
+1. Go to https://forms.office.com
+2. **+ New Form**
+3. Name: `MARDET Tutoring - Student Registration`
+4. Add fields:
+
+| Field | Type | Required |
+|-------|------|----------|
+| First Name | Text | Yes |
+| Last Name | Text | Yes |
+| Email | Text | Yes |
+| Phone | Text | Yes |
+| Unit | Text | Yes |
+| Language | Choice (Arabic, Chinese-Mandarin, Korean, Russian, Spanish, Japanese, French, Farsi, Indonesian) | Yes |
+| Current Proficiency Level | Choice (0, 0+, 1, 1+, 2, 2+, 3) | Yes |
+| Expected Graduation Date | Date | Yes |
+| Reason for Tutoring | Long Text | No |
+
+5. Click **Share** → Copy the form link for students
+
+### Step 1: Create Flow
+
+1. **+ Create** → **Automated cloud flow**
+2. Name: `MARDET - Student Registration`
+3. Trigger: **When a new response is submitted (Microsoft Forms)**
+4. Click **Create**
+
+### Step 2: Configure Trigger
+
+```
+Form Id: (select your Student Registration form)
+```
+
+### Step 3: Get Response Details
+
+**Action: Get response details (Microsoft Forms)**
+```
+Form Id: (same form)
+Response Id: @{triggerOutputs()?['body/resourceData/responseId']}
+```
+
+### Step 4: Start Approval
+
+**Action: Start and wait for an approval**
+```
+Approval type: Approve/Reject - First to respond
+Title: New Student Registration - @{outputs('Get_response_details')?['body/First_Name']} @{outputs('Get_response_details')?['body/Last_Name']}
+Assigned to: ncoic@dliflc.edu (replace with actual NCOIC email)
+Details:
+```
+
+```html
+<h3>New Student Registration Request</h3>
+
+<table style="border-collapse: collapse; margin: 20px 0;">
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Name:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/First_Name']} @{outputs('Get_response_details')?['body/Last_Name']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Email:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Email']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Unit:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Unit']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Language:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Language']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Proficiency:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Current_Proficiency_Level']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Graduation:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Expected_Graduation_Date']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Reason:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Reason_for_Tutoring']}</td>
+  </tr>
+</table>
+
+<p>Approve to add this student to the tutoring system.</p>
+```
+
+### Step 5: Condition - Check Response
+
+**Action: Condition**
+```
+@{outputs('Start_and_wait_for_an_approval')?['body/outcome']} is equal to Approve
+```
+
+### Step 6A: If Approved - Create Student Record
+
+**Action: Create item (SharePoint)**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Students
+Title: @{outputs('Get_response_details')?['body/First_Name']} @{outputs('Get_response_details')?['body/Last_Name']}
+FirstName: @{outputs('Get_response_details')?['body/First_Name']}
+LastName: @{outputs('Get_response_details')?['body/Last_Name']}
+Email: @{outputs('Get_response_details')?['body/Email']}
+Phone: @{outputs('Get_response_details')?['body/Phone']}
+Unit: @{outputs('Get_response_details')?['body/Unit']}
+Language: @{outputs('Get_response_details')?['body/Language']}
+ProficiencyLevel: @{outputs('Get_response_details')?['body/Current_Proficiency_Level']}
+EnrollmentDate: @{utcNow()}
+GraduationDate: @{outputs('Get_response_details')?['body/Expected_Graduation_Date']}
+Status: Active
+```
+
+**Action: Send an email (V2) - Welcome Email**
+```
+To: @{outputs('Get_response_details')?['body/Email']}
+Subject: Welcome to MARDET Tutoring!
+Body:
+```
+
+```html
+<p>Welcome to the MARDET Language Tutoring Program!</p>
+
+<p>Your registration has been approved. You can now:</p>
+<ul>
+  <li>Book tutoring sessions through the PowerApp</li>
+  <li>Access language learning resources</li>
+  <li>Track your progress</li>
+</ul>
+
+<p><strong>Getting Started:</strong></p>
+<ol>
+  <li>Go to the SharePoint site</li>
+  <li>Open the MARDET Tutoring App</li>
+  <li>Log in with your @dliflc.edu credentials</li>
+  <li>Book your first session!</li>
+</ol>
+
+<p>Questions? Contact your tutoring coordinator.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 6B: If Rejected - Notify Applicant
+
+**Action: Send an email (V2)**
+```
+To: @{outputs('Get_response_details')?['body/Email']}
+Subject: MARDET Tutoring Registration Status
+Body:
+```
+
+```html
+<p>Thank you for your interest in the MARDET Tutoring Program.</p>
+
+<p>Unfortunately, your registration was not approved at this time.</p>
+
+<p><strong>Comments:</strong> @{first(outputs('Start_and_wait_for_an_approval')?['body/responses'])?['comments']}</p>
+
+<p>If you have questions, please contact your chain of command.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 7: Save
+
+---
+
+## Flow 11: Tutor Registration
+
+**Purpose:** Allow tutors to self-register via Microsoft Forms with NCOIC approval.
+
+### Prerequisites: Create Microsoft Form
+
+1. Go to https://forms.office.com
+2. **+ New Form**
+3. Name: `MARDET Tutoring - Tutor Registration`
+4. Add fields:
+
+| Field | Type | Required |
+|-------|------|----------|
+| First Name | Text | Yes |
+| Last Name | Text | Yes |
+| Rank | Choice (Cpl, Sgt, SSgt, GySgt, MSgt, 1stSgt, MGySgt, Civilian) | Yes |
+| Email | Text | Yes |
+| Phone | Text | Yes |
+| Language(s) | Choice (multi-select: Arabic, Chinese-Mandarin, Korean, Russian, Spanish, Japanese, French, Farsi, Indonesian) | Yes |
+| Max Hours Per Week | Number | Yes |
+| General Availability | Long Text | Yes |
+
+5. Click **Share** → Copy the form link for potential tutors
+
+### Step 1: Create Flow
+
+1. **+ Create** → **Automated cloud flow**
+2. Name: `MARDET - Tutor Registration`
+3. Trigger: **When a new response is submitted (Microsoft Forms)**
+4. Click **Create**
+
+### Step 2: Configure Trigger
+
+```
+Form Id: (select your Tutor Registration form)
+```
+
+### Step 3: Get Response Details
+
+**Action: Get response details (Microsoft Forms)**
+```
+Form Id: (same form)
+Response Id: @{triggerOutputs()?['body/resourceData/responseId']}
+```
+
+### Step 4: Start Approval
+
+**Action: Start and wait for an approval**
+```
+Approval type: Approve/Reject - First to respond
+Title: New Tutor Registration - @{outputs('Get_response_details')?['body/Rank']} @{outputs('Get_response_details')?['body/Last_Name']}
+Assigned to: ncoic@dliflc.edu (replace with actual NCOIC email)
+Details:
+```
+
+```html
+<h3>New Tutor Registration Request</h3>
+
+<table style="border-collapse: collapse; margin: 20px 0;">
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Name:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Rank']} @{outputs('Get_response_details')?['body/First_Name']} @{outputs('Get_response_details')?['body/Last_Name']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Email:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Email']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Language(s):</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Language(s)']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Max Hours/Week:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/Max_Hours_Per_Week']}</td>
+  </tr>
+  <tr>
+    <td style="padding: 8px; font-weight: bold;">Availability:</td>
+    <td style="padding: 8px;">@{outputs('Get_response_details')?['body/General_Availability']}</td>
+  </tr>
+</table>
+
+<p>Approve to add this tutor to the system.</p>
+```
+
+### Step 5: Condition - Check Response
+
+**Action: Condition**
+```
+@{outputs('Start_and_wait_for_an_approval')?['body/outcome']} is equal to Approve
+```
+
+### Step 6A: If Approved - Create Tutor Record
+
+**Action: Create item (SharePoint)**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Tutors
+Title: @{outputs('Get_response_details')?['body/First_Name']} @{outputs('Get_response_details')?['body/Last_Name']}
+FirstName: @{outputs('Get_response_details')?['body/First_Name']}
+LastName: @{outputs('Get_response_details')?['body/Last_Name']}
+Rank: @{outputs('Get_response_details')?['body/Rank']}
+Email: @{outputs('Get_response_details')?['body/Email']}
+Phone: @{outputs('Get_response_details')?['body/Phone']}
+Language: @{outputs('Get_response_details')?['body/Language(s)']}
+MaxHoursPerWeek: @{outputs('Get_response_details')?['body/Max_Hours_Per_Week']}
+Availability: @{outputs('Get_response_details')?['body/General_Availability']}
+Status: Active
+```
+
+**Action: Send an email (V2) - Welcome Email**
+```
+To: @{outputs('Get_response_details')?['body/Email']}
+Subject: Welcome to MARDET Tutoring - Tutor Access Granted
+Body:
+```
+
+```html
+<p>Welcome to the MARDET Language Tutoring Program as a tutor!</p>
+
+<p>Your registration has been approved. You can now:</p>
+<ul>
+  <li>Receive and confirm tutoring appointments</li>
+  <li>Add session notes for students</li>
+  <li>Access tutoring resources</li>
+</ul>
+
+<p><strong>Getting Started:</strong></p>
+<ol>
+  <li>Go to the SharePoint site</li>
+  <li>Open the MARDET Tutoring App</li>
+  <li>Log in with your @dliflc.edu credentials</li>
+  <li>Update your availability settings</li>
+</ol>
+
+<p>Questions? Contact your tutoring coordinator.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 6B: If Rejected - Notify Applicant
+
+**Action: Send an email (V2)**
+```
+To: @{outputs('Get_response_details')?['body/Email']}
+Subject: MARDET Tutoring Registration Status
+Body:
+```
+
+```html
+<p>Thank you for your interest in becoming a tutor.</p>
+
+<p>Unfortunately, your registration was not approved at this time.</p>
+
+<p><strong>Comments:</strong> @{first(outputs('Start_and_wait_for_an_approval')?['body/responses'])?['comments']}</p>
+
+<p>If you have questions, please contact your chain of command.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 7: Save
+
+---
+
+## Flow 12: Auto-Deactivation
+
+**Purpose:** Automatically deactivate students past graduation or users inactive for 30+ days.
+
+### Step 1: Create Flow
+
+1. **+ Create** → **Scheduled cloud flow**
+2. Name: `MARDET - Auto Deactivation`
+3. Run: **Every day** at **1:00 AM**
+4. Click **Create**
+
+### Step 2: Deactivate Graduated Students
+
+**Action: Get items (SharePoint)**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Students
+Filter Query: Status eq 'Active'
+```
+
+**Action: Filter array - Past Graduation**
+```
+From: @{outputs('Get_items_-_Active_Students')?['body/value']}
+Filter: @less(item()?['GraduationDate'], utcNow())
+```
+
+**Action: Apply to each - Deactivate Graduated**
+```
+Select output: @{body('Filter_array_-_Past_Graduation')}
+```
+
+Inside loop:
+
+**Action: Update item**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Students
+Id: @{items('Apply_to_each_-_Deactivate_Graduated')?['ID']}
+Status: Inactive
+```
+
+**Action: Send an email (V2)**
+```
+To: @{items('Apply_to_each_-_Deactivate_Graduated')?['Email']}
+Subject: MARDET Tutoring Account Deactivated - Graduation
+Body:
+```
+
+```html
+<p>Your MARDET Tutoring account has been deactivated as your graduation date has passed.</p>
+
+<p>Thank you for using the tutoring program. Best of luck in your future assignments!</p>
+
+<p>If this was in error, please contact the tutoring office.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 3: Find Inactive Users (No Activity 30+ Days)
+
+**Action: Get items - All Appointments**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Appointments
+```
+
+**Action: Compose - 30 Days Ago**
+```
+@{addDays(utcNow(), -30)}
+```
+
+**Action: Get items - Active Students**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Students
+Filter Query: Status eq 'Active'
+```
+
+**Action: Apply to each - Check Student Activity**
+```
+Select output: @{outputs('Get_items_-_Active_Students')?['body/value']}
+```
+
+Inside loop:
+
+**Action: Filter array - Student's Recent Appointments**
+```
+From: @{outputs('Get_items_-_All_Appointments')?['body/value']}
+Filter: @and(
+  equals(item()?['StudentLookupId'], items('Apply_to_each_-_Check_Student_Activity')?['ID']),
+  greaterOrEquals(item()?['AppointmentDate'], outputs('Compose_-_30_Days_Ago'))
+)
+```
+
+**Action: Condition - No Recent Activity**
+```
+@{length(body('Filter_array_-_Student''s_Recent_Appointments'))} is equal to 0
+```
+
+**If yes (no appointments in 30 days):**
+
+**Action: Update item**
+```
+List: Students
+Id: @{items('Apply_to_each_-_Check_Student_Activity')?['ID']}
+Status: Inactive
+```
+
+**Action: Send an email (V2)**
+```
+To: @{items('Apply_to_each_-_Check_Student_Activity')?['Email']}
+Subject: MARDET Tutoring Account Deactivated - Inactivity
+Body:
+```
+
+```html
+<p>Your MARDET Tutoring account has been deactivated due to 30 days of inactivity.</p>
+
+<p>If you still need tutoring services, you can re-register through the tutoring registration form.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 4: Repeat for Tutors (Optional)
+
+Duplicate the inactive user check logic for the Tutors list if you want to auto-deactivate inactive tutors as well.
+
+### Step 5: Save
+
+---
+
+## Flow 13: Inactivity Warning
+
+**Purpose:** Warn users at 21 days of inactivity before auto-deactivation at 30 days.
+
+### Step 1: Create Flow
+
+1. **+ Create** → **Scheduled cloud flow**
+2. Name: `MARDET - Inactivity Warning`
+3. Run: **Every day** at **2:00 AM**
+4. Click **Create**
+
+### Step 2: Calculate Date Range
+
+**Action: Compose - 21 Days Ago**
+```
+@{addDays(utcNow(), -21)}
+```
+
+**Action: Compose - 22 Days Ago**
+```
+@{addDays(utcNow(), -22)}
+```
+
+### Step 3: Get Active Students
+
+**Action: Get items (SharePoint)**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Students
+Filter Query: Status eq 'Active'
+```
+
+### Step 4: Get All Recent Appointments
+
+**Action: Get items - Appointments**
+```
+Site Address: https://dliflc01.sharepoint.com/sites/MCD
+List Name: Appointments
+```
+
+### Step 5: Loop Through Students
+
+**Action: Apply to each**
+```
+Select output: @{outputs('Get_items_-_Active_Students')?['body/value']}
+```
+
+Inside loop:
+
+**Action: Filter array - Student's Last 21 Days**
+```
+From: @{outputs('Get_items_-_Appointments')?['body/value']}
+Filter: @and(
+  equals(item()?['StudentLookupId'], items('Apply_to_each')?['ID']),
+  greaterOrEquals(item()?['AppointmentDate'], outputs('Compose_-_21_Days_Ago'))
+)
+```
+
+**Action: Condition - No Activity in 21 Days**
+```
+@{length(body('Filter_array_-_Student''s_Last_21_Days'))} is equal to 0
+```
+
+**If yes:**
+
+**Action: Filter array - Activity 22 Days Ago**
+(This prevents sending the warning every day - only send once when they hit 21 days)
+```
+From: @{outputs('Get_items_-_Appointments')?['body/value']}
+Filter: @and(
+  equals(item()?['StudentLookupId'], items('Apply_to_each')?['ID']),
+  greaterOrEquals(item()?['AppointmentDate'], outputs('Compose_-_22_Days_Ago')),
+  less(item()?['AppointmentDate'], outputs('Compose_-_21_Days_Ago'))
+)
+```
+
+**Action: Condition - Had Activity 22 Days Ago**
+```
+@{length(body('Filter_array_-_Activity_22_Days_Ago'))} is greater than 0
+```
+
+**If yes (just hit 21 day mark):**
+
+**Action: Send an email (V2)**
+```
+To: @{items('Apply_to_each')?['Email']}
+Subject: Action Required: Your MARDET Tutoring Account
+Body:
+```
+
+```html
+<p>Your MARDET Tutoring account has been inactive for 21 days.</p>
+
+<p><strong>Important:</strong> If you don't book a tutoring session within the next 9 days, your account will be automatically deactivated.</p>
+
+<p>To keep your account active:</p>
+<ol>
+  <li>Log into the MARDET Tutoring App</li>
+  <li>Book a tutoring session</li>
+</ol>
+
+<p>If you no longer need tutoring services, no action is needed and your account will be deactivated automatically.</p>
+
+<p>Questions? Contact your tutoring coordinator.</p>
+
+<p>- MARDET Tutoring System</p>
+```
+
+### Step 6: Save
+
+---
+
+## Microsoft Forms Links
+
+After creating the registration forms, share these links with students and tutors:
+
+| Form | Purpose | Share With |
+|------|---------|------------|
+| Student Registration | New students self-register | All Marines in language training |
+| Tutor Registration | New tutors volunteer | Qualified personnel |
+
+**Tip:** Add these form links to your SharePoint site homepage and/or Teams channel for easy access.
+
+---
+
 ## Flow Summary
 
 After building all flows, you should have:
@@ -1192,6 +1790,10 @@ After building all flows, you should have:
 | 7 | Cancellation Notification | On status → Cancelled | ☐ Built |
 | 8 | Teams Daily Summary | Daily 7 AM | ☐ Built |
 | 9 | Monthly Progress Report | 1st of month 8 AM | ☐ Built |
+| 10 | Student Registration | Form submission | ☐ Built |
+| 11 | Tutor Registration | Form submission | ☐ Built |
+| 12 | Auto-Deactivation | Daily 1 AM | ☐ Built |
+| 13 | Inactivity Warning | Daily 2 AM | ☐ Built |
 
 ---
 

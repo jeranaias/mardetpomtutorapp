@@ -40,7 +40,7 @@ export default function BookAppointment() {
           </a>
 
           <p className="text-sm text-gray-500 mt-4">
-            Requires DLI network access and CAC authentication
+            Requires DLI network access and dliflc.edu login with MFA
           </p>
         </div>
       </div>
@@ -101,7 +101,7 @@ export default function BookAppointment() {
           <div className="text-center">
             <div className="w-10 h-10 bg-dli-gold text-marine-900 rounded-full flex items-center justify-center font-bold mx-auto mb-3">1</div>
             <div className="font-semibold text-marine-800">Login</div>
-            <div className="text-sm text-gray-600">Use your CAC to access the app</div>
+            <div className="text-sm text-gray-600">Sign in with your dliflc.edu account</div>
           </div>
           <div className="text-center">
             <div className="w-10 h-10 bg-dli-gold text-marine-900 rounded-full flex items-center justify-center font-bold mx-auto mb-3">2</div>
