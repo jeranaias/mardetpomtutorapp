@@ -18,7 +18,7 @@ A hybrid tutoring management system for the Marine Corps Detachment at the Defen
 **2. Private Component: "Tutoring Operations Manager"**
 - **Technology**: PowerApp Canvas + SharePoint Lists + Power Automate
 - **Purpose**: Appointment scheduling, session notes, progress tracking
-- **Data**: PII-protected in SharePoint with CAC/SSO authentication
+- **Data**: PII-protected in SharePoint with MFA/SSO authentication (dliflc.edu)
 - **Security**: DLIFLC M365 tenant, follows DLI PowerApp policy
 - **Integration**: Links to public resources, PowerBI dashboards
 
@@ -85,7 +85,7 @@ A hybrid tutoring management system for the Marine Corps Detachment at the Defen
 - **Database**: SharePoint Lists
 - **Automation**: Power Automate
 - **Analytics**: PowerBI
-- **Authentication**: DLI M365 SSO/CAC
+- **Authentication**: DLI M365 SSO/MFA (dliflc.edu)
 
 ## Repository Structure
 
@@ -159,7 +159,7 @@ dli-language-resources/           # Public site repository
 - No backend API or database
 
 ### Private PowerApp
-- CAC/SSO authentication required
+- Azure AD SSO with MFA required (dliflc.edu accounts)
 - All PII in SharePoint (DoD-approved)
 - Role-based permissions (Students/Tutors/Admin)
 - Service account for automation (not personal accounts)

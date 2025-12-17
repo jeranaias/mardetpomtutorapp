@@ -567,14 +567,6 @@ Set(varValidEmail,
 );
 ```
 
-### CAC EDIPI Validation (10 digits)
-```powerFx
-Set(varValidEDIPI,
-    Len(txtEDIPI.Text) = 10 &&
-    IsNumeric(txtEDIPI.Text)
-);
-```
-
 ### Date Range Validation
 ```powerFx
 // Appointment must be in future

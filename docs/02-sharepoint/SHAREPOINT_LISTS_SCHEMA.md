@@ -26,7 +26,6 @@ This document defines the complete SharePoint list structure for the MARDET Lang
 | Languages | Choice | Yes | Multi-select: Arabic, Russian, Chinese, Korean, Farsi, Spanish, French, Indonesian, Japanese |
 | MaxHoursPerWeek | Number | Yes | Default: 20, Min: 0, Max: 40 |
 | Status | Choice | Yes | Active, Inactive, On Leave. Default: Active |
-| CAC_EDIPI | Single line of text | Yes | 10 digits, unique |
 | PhoneNumber | Single line of text | No | Format: (XXX) XXX-XXXX |
 | OfficeLocation | Single line of text | No | Building and room number |
 | Specializations | Multiple lines of text | No | Plain text, areas of expertise |
@@ -63,7 +62,6 @@ This document defines the complete SharePoint list structure for the MARDET Lang
 | Language | Choice | Yes | Single select: Arabic, Russian, Chinese, Korean, Farsi, Spanish, French, Indonesian, Japanese |
 | Class | Single line of text | Yes | Format: ARA-001-2025 |
 | CurrentGrade | Single line of text | No | Letter grade or percentage |
-| CAC_EDIPI | Single line of text | Yes | 10 digits, unique |
 | PhoneNumber | Single line of text | No | Format: (XXX) XXX-XXXX |
 | Company | Choice | Yes | Alpha, Bravo, Charlie, Delta, Echo, HQ |
 | Platoon | Number | No | 1-4 |
@@ -275,7 +273,6 @@ Add-PnPField -List "Tutors" -DisplayName "Rank" -InternalName "Rank" -Type Choic
 Add-PnPField -List "Tutors" -DisplayName "Languages" -InternalName "Languages" -Type MultiChoice -Choices "Arabic","Russian","Chinese","Korean","Farsi","Spanish","French","Indonesian","Japanese" -Required
 Add-PnPField -List "Tutors" -DisplayName "MaxHoursPerWeek" -InternalName "MaxHoursPerWeek" -Type Number -Required
 Add-PnPField -List "Tutors" -DisplayName "Status" -InternalName "Status" -Type Choice -Choices "Active","Inactive","On Leave" -Required -DefaultValue "Active"
-Add-PnPField -List "Tutors" -DisplayName "CAC_EDIPI" -InternalName "CAC_EDIPI" -Type Text -Required
 
 # Create Students List
 New-PnPList -Title "Students" -Template GenericList -Url "Lists/Students"
@@ -285,7 +282,6 @@ Add-PnPField -List "Students" -DisplayName "Email" -InternalName "Email" -Type T
 Add-PnPField -List "Students" -DisplayName "Rank" -InternalName "Rank" -Type Choice -Choices "Pvt","PFC","LCpl","Cpl","Sgt","SSgt","GySgt","MSgt" -Required
 Add-PnPField -List "Students" -DisplayName "Language" -InternalName "Language" -Type Choice -Choices "Arabic","Russian","Chinese","Korean","Farsi","Spanish","French","Indonesian","Japanese" -Required
 Add-PnPField -List "Students" -DisplayName "Class" -InternalName "Class" -Type Text -Required
-Add-PnPField -List "Students" -DisplayName "CAC_EDIPI" -InternalName "CAC_EDIPI" -Type Text -Required
 Add-PnPField -List "Students" -DisplayName "Company" -InternalName "Company" -Type Choice -Choices "Alpha","Bravo","Charlie","Delta","Echo","HQ" -Required
 Add-PnPField -List "Students" -DisplayName "Status" -InternalName "Status" -Type Choice -Choices "Active","Graduated","Dropped","On Leave" -Required -DefaultValue "Active"
 
@@ -340,23 +336,21 @@ Write-Host "All lists created successfully!"
 ### Sample Tutor
 ```
 FullName: SSgt John Smith
-Email: john.smith@dli.edu
+Email: john.smith@dliflc.edu
 Rank: SSgt
 Languages: Arabic, Farsi
 MaxHoursPerWeek: 25
 Status: Active
-CAC_EDIPI: 1234567890
 ```
 
 ### Sample Student
 ```
 FullName: LCpl Jane Doe
-Email: jane.doe@dli.edu
+Email: jane.doe@dliflc.edu
 Rank: LCpl
 Language: Arabic
 Class: ARA-001-2025
 Status: Active
-CAC_EDIPI: 0987654321
 Company: Alpha
 Platoon: 1
 ```
@@ -378,8 +372,8 @@ FocusArea: Grammar, Vocab
 
 Create indexes on these columns:
 - Appointments: AppointmentDate, Status, TutorID, StudentID
-- Students: CAC_EDIPI, Language, Status
-- Tutors: CAC_EDIPI, Status
+- Students: Email, Language, Status
+- Tutors: Email, Status
 - SessionNotes: AppointmentID
 - ProgressTracking: StudentID, SnapshotDate
 

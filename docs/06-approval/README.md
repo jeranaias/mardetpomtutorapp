@@ -213,7 +213,7 @@ This package provides all documentation needed to:
 ### 2. Strong Security Controls
 
 **Authentication:**
-- CAC (PKI) required for all users
+- Azure AD with MFA required for all users (dliflc.edu accounts)
 - Multi-factor authentication enforced
 - No password-based authentication
 - 15-minute session timeout
@@ -299,14 +299,14 @@ This package provides all documentation needed to:
 **A:** Commercial solutions require:
 - 6-12 month ATO process (vs 30 days for PowerApps)
 - Significant licensing costs ($10K-50K annually)
-- Custom integration with CAC authentication
+- Custom integration with DoD authentication
 - Additional security assessments
 - Long-term vendor contracts
 
 PowerApps is:
 - Already approved DoD platform
 - Included in M365 license (no additional cost)
-- Native CAC integration
+- Native Azure AD MFA integration
 - Rapid deployment (weeks vs months)
 - DCSIT familiar with support
 

@@ -58,9 +58,9 @@ All data handled by this system is **UNCLASSIFIED**.
 
 ### 2.1 Authentication & Access Control
 
-**Authentication Method**: Common Access Card (CAC) / Azure AD Single Sign-On
+**Authentication Method**: Azure AD Single Sign-On with MFA (dliflc.edu accounts)
 
-- All users authenticate via DoD PKI (CAC)
+- All users authenticate via Azure AD with MFA
 - Multi-factor authentication enforced through Azure AD
 - No local accounts or password-based authentication
 - Session timeout: 15 minutes of inactivity
@@ -94,10 +94,10 @@ All data handled by this system is **UNCLASSIFIED**.
 **Network Boundaries:**
 - Application hosted in Microsoft 365 Government Cloud
 - Access via HTTPS only (port 443)
-- No VPN required (CAC authentication sufficient)
+- No VPN required (Azure AD MFA authentication sufficient)
 - No direct database access (SharePoint API only)
 
-**IP Restrictions**: Not applicable (CAC-based authentication)
+**IP Restrictions**: Not applicable (Azure AD MFA authentication)
 
 **Firewall Rules**: Microsoft-managed at cloud infrastructure level
 
@@ -132,8 +132,7 @@ All data handled by this system is **UNCLASSIFIED**.
 **PII Elements Stored:**
 - Full name (required for appointment scheduling)
 - Rank (required for military protocol)
-- Email address (required for notifications)
-- CAC EDIPI (optional, for unique identification)
+- Email address (required for notifications and authentication)
 
 **No Sensitive PII:**
 - No SSN
@@ -190,12 +189,12 @@ The system collects only the minimum data necessary for functionality:
 
 | Threat | Likelihood | Impact | Mitigation |
 |--------|-----------|--------|------------|
-| Unauthorized access | Low | Medium | CAC authentication, RBAC, RLS |
+| Unauthorized access | Low | Medium | MFA authentication, RBAC, RLS |
 | Data breach | Low | Medium | Encryption, no SPII, audit logs |
 | Insider threat | Low | Low | Audit logging, least privilege |
 | Denial of service | Low | Low | Microsoft-managed DDoS protection |
 | Malware injection | Very Low | Low | No file uploads, no custom code |
-| Account compromise | Low | Medium | MFA, session timeout, CAC required |
+| Account compromise | Low | Medium | MFA, session timeout, Azure AD required |
 
 ### 4.2 Vulnerability Assessment
 
@@ -220,7 +219,7 @@ The system collects only the minimum data necessary for functionality:
 **Justification:**
 - No classified data
 - No SPII (Sensitive PII)
-- CAC-enforced authentication
+- MFA-enforced authentication (dliflc.edu accounts)
 - Microsoft-managed security controls
 - Minimal attack surface (no custom code)
 - Limited user base (internal only)
@@ -266,7 +265,7 @@ The system collects only the minimum data necessary for functionality:
 - Media Protection (MP): N/A (cloud only)
 - Physical Protection (PE): Microsoft data centers
 - Planning (PL): This document
-- Personnel Security (PS): CAC requirement
+- Personnel Security (PS): MFA requirement (dliflc.edu)
 - Risk Assessment (RA): Section 4 above
 - System and Services Acquisition (SA): M365 GCC
 - System and Communications Protection (SC): Microsoft-managed
@@ -434,7 +433,7 @@ The system collects only the minimum data necessary for functionality:
 **All Users:**
 - Annual DLIFLC security training (mandatory)
 - Phishing awareness (DCSIT program)
-- CAC security (DoD baseline)
+- MFA security practices (Azure AD)
 - Data handling procedures (this document)
 
 **Administrators:**
@@ -562,7 +561,7 @@ The system collects only the minimum data necessary for functionality:
 
 ## 12. Conclusion
 
-The MARDET Language Tutoring System is a low-risk, unclassified application built entirely on the DoD-approved Microsoft 365 Government Cloud platform. It leverages robust security controls including CAC authentication, encryption at rest and in transit, role-based access control, and comprehensive audit logging.
+The MARDET Language Tutoring System is a low-risk, unclassified application built entirely on the DoD-approved Microsoft 365 Government Cloud platform. It leverages robust security controls including Azure AD MFA authentication (dliflc.edu accounts), encryption at rest and in transit, role-based access control, and comprehensive audit logging.
 
 The system processes no classified information and minimal PII, adheres to all applicable DoD and DLIFLC IT policies, and implements security controls appropriate for its low impact classification.
 

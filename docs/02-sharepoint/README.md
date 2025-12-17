@@ -143,7 +143,7 @@ Students ←──(1:N)──→ ProgressTracking
 ## Key Features
 
 ### Security
-- CAC/SSO authentication via M365
+- MFA/SSO authentication via M365 (dliflc.edu accounts)
 - Role-based permissions (Student/Tutor/Admin)
 - PII protected in SharePoint tenant
 - Service account for automation
@@ -165,7 +165,7 @@ Students ←──(1:N)──→ ProgressTracking
 ## Validation Rules
 
 ### Built-in Constraints
-- Unique CAC_EDIPI (10 digits)
+- Unique Email (dliflc.edu)
 - Email format validation
 - Date range checks
 - Required field enforcement
@@ -267,7 +267,7 @@ The **Resources** list in SharePoint will contain URLs pointing to the public Gi
 
 ### DLIFLC PowerApp Policy
 - ✅ All PII in M365 tenant (SharePoint)
-- ✅ CAC/SSO authentication
+- ✅ MFA/SSO authentication (dliflc.edu)
 - ✅ Role-based permissions
 - ✅ Audit logging enabled
 - ✅ Service account for automation (configured in Segment 3)

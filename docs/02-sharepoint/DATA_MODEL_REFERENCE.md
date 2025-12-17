@@ -12,7 +12,6 @@
 │ Languages [M]   │
 │ MaxHoursPerWeek │
 │ Status          │
-│ CAC_EDIPI       │
 └────────┬────────┘
          │
          │ 1:N
@@ -45,8 +44,8 @@
 │ Rank            │        │ DLPTListening   │
 │ Company         │        │ DLPTReading     │
 │ Status          │        │ Trends          │
-│ CAC_EDIPI       │        │ TutoringHours   │
-└─────────────────┘        └─────────────────┘
+└─────────────────┘        │ TutoringHours   │
+                           └─────────────────┘
 
 
 ┌─────────────────┐
@@ -224,9 +223,9 @@ Appointments.AppointmentDate    - For calendar queries
 Appointments.Status             - Filter scheduled vs completed
 Appointments.TutorID            - Tutor schedule views
 Appointments.StudentID          - Student history views
-Students.CAC_EDIPI              - Authentication lookup
+Students.Email                  - Authentication lookup (dliflc.edu)
 Students.Language               - Filter by language
-Tutors.CAC_EDIPI                - Authentication lookup
+Tutors.Email                    - Authentication lookup (dliflc.edu)
 SessionNotes.AppointmentID      - Link to appointments
 ```
 
@@ -266,8 +265,7 @@ SessionNotes.AppointmentID      - Link to appointments
 - No overlapping appointments for same student
 
 ### Students/Tutors
-- CAC_EDIPI = exactly 10 digits
-- Email ends with @dli.edu or .mil
+- Email ends with @dliflc.edu (used for MFA authentication)
 - PhoneNumber matches (XXX) XXX-XXXX
 
 ### SessionNotes

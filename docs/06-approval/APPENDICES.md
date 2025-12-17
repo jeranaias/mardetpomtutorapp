@@ -4,7 +4,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                          USERS (CAC AUTH)                        │
+│                          USERS (MFA AUTH)                        │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
 │  │ Students │  │  Tutors  │  │  Tutor   │  │  Admins  │       │
 │  │  (~400)  │  │  (~30)   │  │  Chiefs  │  │   (~3)   │       │
@@ -16,7 +16,7 @@
         └─────────────┴─────────────┴─────────────┘
                       │
         ┌─────────────▼────────────────────────────────────────┐
-        │         Azure AD Authentication (CAC/PKI)             │
+        │         Azure AD Authentication (MFA)                 │
         │   - Multi-Factor Authentication                       │
         │   - Single Sign-On (SSO)                              │
         │   - Session Management (15 min timeout)               │
@@ -137,7 +137,7 @@ EXTERNAL (INFORMATIONAL ONLY):
 ```
                     Student
                        │
-                       │ 1. Login (CAC)
+                       │ 1. Login (MFA)
                        ▼
          ┌─────────────────────────────┐
          │   P1: Authenticate User     │
@@ -234,16 +234,16 @@ EXTERNAL (INFORMATIONAL ONLY):
 
 | Control | Name | Status | Implementation |
 |---------|------|--------|---------------|
-| IA-1 | Identification and Authentication Policy | ✅ | CAC/Azure AD |
-| IA-2 | Multi-Factor Authentication | ✅ | CAC (PKI) |
+| IA-1 | Identification and Authentication Policy | ✅ | Azure AD/MFA |
+| IA-2 | Multi-Factor Authentication | ✅ | Azure AD MFA |
 | IA-2(1) | Network Access to Privileged Accounts | ✅ | Service account MFA-exempt but monitored |
-| IA-2(2) | Network Access to Non-Privileged Accounts | ✅ | All users use CAC |
+| IA-2(2) | Network Access to Non-Privileged Accounts | ✅ | All users use MFA |
 | IA-3 | Device Identification and Authentication | ✅ | Azure AD device compliance |
 | IA-4 | Identifier Management | ✅ | Azure AD managed |
-| IA-5 | Authenticator Management | ✅ | CAC/PKI certificates |
+| IA-5 | Authenticator Management | ✅ | Azure AD MFA |
 | IA-6 | Authenticator Feedback | ✅ | No password display |
 | IA-7 | Cryptographic Module Authentication | ✅ | FIPS 140-2 compliant |
-| IA-8 | Identification and Authentication | ✅ | DoD PKI certificates |
+| IA-8 | Identification and Authentication | ✅ | Azure AD (dliflc.edu) |
 | AC-1 | Access Control Policy | ✅ | RBAC implemented |
 | AC-2 | Account Management | ✅ | Azure AD groups |
 | AC-3 | Access Enforcement | ✅ | SharePoint permissions |
@@ -255,7 +255,7 @@ EXTERNAL (INFORMATIONAL ONLY):
 | AC-11 | Session Lock | ✅ | 15-minute timeout |
 | AC-12 | Session Termination | ✅ | Automatic session end |
 | AC-14 | Permitted Actions without Identification | ❌ | N/A - All actions require auth |
-| AC-17 | Remote Access | ✅ | CAC required for all access |
+| AC-17 | Remote Access | ✅ | MFA required for all access |
 | AC-18 | Wireless Access | ✅ | Standard M365 controls |
 | AC-19 | Access Control for Mobile Devices | ✅ | Azure AD device policies |
 | AC-20 | Use of External Information Systems | ❌ | N/A - No external systems |
@@ -349,7 +349,7 @@ EXTERNAL (INFORMATIONAL ONLY):
 | Annual Review | ✅ | Commitment made |
 | No External Connectors | ✅ | SharePoint/O365 only |
 | No File Uploads | ✅ | Text data only |
-| CAC Authentication | ✅ | Azure AD integration |
+| MFA Authentication | ✅ | Azure AD integration (dliflc.edu) |
 
 **Policy Compliance:** COMPLIANT (pending CS approval)
 
@@ -379,12 +379,12 @@ EXTERNAL (INFORMATIONAL ONLY):
 
 | Threat | Likelihood | Impact | Risk Level | Mitigation |
 |--------|-----------|--------|-----------|------------|
-| Unauthorized Access | Low | Medium | LOW | CAC auth, RBAC, audit logs |
+| Unauthorized Access | Low | Medium | LOW | MFA auth, RBAC, audit logs |
 | Data Breach | Low | Medium | LOW | Encryption, no SPII, monitoring |
 | Insider Threat | Low | Low | VERY LOW | Audit logs, least privilege |
 | Denial of Service | Low | Low | VERY LOW | Microsoft DDoS protection |
 | Malware Injection | Very Low | Low | VERY LOW | No file uploads, no custom code |
-| Account Compromise | Low | Medium | LOW | MFA, session timeout, CAC |
+| Account Compromise | Low | Medium | LOW | MFA, session timeout, Azure AD |
 | Data Loss | Very Low | Medium | VERY LOW | Daily backups, version history |
 | SQL Injection | Very Low | Low | VERY LOW | SharePoint API only |
 | Cross-Site Scripting | Very Low | Low | VERY LOW | Canvas app, no custom HTML |

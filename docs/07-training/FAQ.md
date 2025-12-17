@@ -27,7 +27,7 @@ Last Updated: December 2025
 **A:** 
 1. Open Microsoft Edge browser
 2. Go to: https://make.powerapps.com
-3. Sign in with your CAC
+3. Sign in with your dliflc.edu account (MFA required)
 4. Click "Apps" in left menu
 5. Select "MARDET - Language Tutoring System"
 
@@ -39,11 +39,11 @@ Or download the Power Apps mobile app and sign in.
 
 ### Q: I'm a new student. How do I get started?
 
-**A:** Your account is automatically created when you join the detachment. Just log in with your CAC. Read the Student Quick Start Guide first.
+**A:** Your account is automatically created when you join the detachment. Just log in with your dliflc.edu account (MFA required). Read the Student Quick Start Guide first.
 
 ### Q: Can I use my personal computer/phone?
 
-**A:** No. Use government-provided devices only. System requires CAC authentication which doesn't work on personal devices.
+**A:** No. Use government-provided devices only. System requires dliflc.edu authentication with MFA.
 
 ### Q: What browsers are supported?
 
@@ -261,14 +261,14 @@ Based on last 5 progress snapshots.
 5. Restart computer
 6. Contact helpdesk if still broken
 
-### Q: I can't log in with my CAC
+### Q: I can't log in with my dliflc.edu account
 
 **A:** Check:
-1. CAC inserted correctly
-2. CAC reader light is on
-3. PIN entered correctly
-4. Certificates not expired
-5. Using approved browser
+1. Correct email (firstname.lastname@dliflc.edu)
+2. MFA app is configured and working
+3. Password not expired
+4. Using approved browser
+5. Account not locked
 
 Still stuck? Helpdesk: (831) 242-7440
 
@@ -304,7 +304,7 @@ If appointment is in system but no email, contact helpdesk.
 
 ### Q: Can I use the system on my phone?
 
-**A:** Yes! Download "Power Apps" from your app store (government device only). Sign in with CAC.
+**A:** Yes! Download "Power Apps" from your app store (government device only). Sign in with your dliflc.edu account.
 
 ### Q: Who do I contact for technical problems?
 
@@ -360,7 +360,7 @@ See full policy: [Link to privacy document]
 ### Q: What data is collected about me?
 
 **A:** 
-- Profile: Name, rank, email, CAC EDIPI, language, class
+- Profile: Name, rank, email, language, class
 - Appointments: Date, time, tutor, focus areas, status
 - Performance: Session notes, performance ratings
 - Academic: Grades, DLPT scores (from instructor updates)

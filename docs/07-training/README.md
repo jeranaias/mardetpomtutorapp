@@ -179,8 +179,8 @@ This is the **final segment** of the MARDET Language Tutoring System project! Th
 book your first tutoring appointment. It's quick and easy."
 
 [0:30-1:00] LOGIN
-"First, open your browser and go to make.powerapps.com. Sign in with 
-your CAC. Click 'Apps' on the left, then select 'MARDET - Language 
+"First, open your browser and go to make.powerapps.com. Sign in with
+your dliflc.edu account and complete MFA. Click 'Apps' on the left, then select 'MARDET - Language
 Tutoring System'."
 
 [1:00-1:30] DASHBOARD
@@ -556,7 +556,7 @@ Preferred Contact: Email / Phone / In-person
 ## Troubleshooting Quick Reference
 
 ### Students Can't Login
-→ CAC reader, certificates, browser
+→ MFA app, dliflc.edu credentials, browser
 
 ### Booking Fails
 → Conflict, required fields, refresh

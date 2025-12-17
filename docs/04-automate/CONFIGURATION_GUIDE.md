@@ -484,7 +484,6 @@ Process only relevant items
 ### Email Content
 
 - Never include sensitive PII beyond what's necessary
-- No CAC EDIPI in emails
 - No grade details in plain text
 - Use secure links to PowerApp
 

@@ -59,7 +59,7 @@
 
 **Network:** NIPRNET only
 
-**Authentication:** CAC / Azure AD SSO
+**Authentication:** Azure AD SSO with MFA (dliflc.edu)
 
 ---
 
@@ -113,7 +113,7 @@
 **Justification:**
 - No classified information
 - No sensitive PII (only name, rank, email)
-- CAC authentication required
+- Azure AD MFA authentication required (dliflc.edu accounts)
 - Encryption at rest (AES-256) and in transit (TLS 1.2+)
 - Microsoft-managed security controls
 - Role-based access control (RBAC)
@@ -266,7 +266,7 @@ Implement a comprehensive PowerApp-based system that:
 - Approved DoD/DLIFLC platform (no new software acquisition)
 - Rapid development (built in 4-6 weeks vs 6+ months custom)
 - No ATO required for infrastructure (Microsoft-managed)
-- Native CAC integration
+- Native Azure AD MFA integration
 - M365 seeded licensing (no additional cost)
 - DCSIT familiar with platform
 

@@ -99,36 +99,31 @@ For each list:
      ```
    - Default: Active
 
-8. **CAC_EDIPI**
-   - Type: Single line of text
-   - Required: Yes
-   - Max length: 10
-
-9. **PhoneNumber**
+8. **PhoneNumber**
    - Type: Single line of text
    - Required: No
    - Max length: 20
 
-10. **OfficeLocation**
+9. **OfficeLocation**
     - Type: Single line of text
     - Required: No
 
-11. **Specializations**
+10. **Specializations**
     - Type: Multiple lines of text
     - Required: No
     - Type: Plain text
 
-12. **Bio**
+11. **Bio**
     - Type: Multiple lines of text
     - Required: No
     - Type: Enhanced rich text
 
-13. **HireDate**
+12. **HireDate**
     - Type: Date and time
     - Required: Yes
     - Include time: No
 
-14. **Notes**
+13. **Notes**
     - Type: Multiple lines of text
     - Required: No
     - Type: Plain text
@@ -182,9 +177,8 @@ For each list:
    ```
 6. **Class** - Single line text, Required
 7. **CurrentGrade** - Single line text
-8. **CAC_EDIPI** - Single line text, Required, 10 chars
-9. **PhoneNumber** - Single line text
-10. **Company** - Choice, Required
+8. **PhoneNumber** - Single line text
+9. **Company** - Choice, Required
     ```
     Alpha
     Bravo
@@ -193,18 +187,18 @@ For each list:
     Echo
     HQ
     ```
-11. **Platoon** - Number (1-4)
-12. **Squad** - Number (1-4)
-13. **EnrollmentDate** - Date, Required
-14. **GraduationDate** - Date
-15. **Status** - Choice, Required, Default: Active
+10. **Platoon** - Number (1-4)
+11. **Squad** - Number (1-4)
+12. **EnrollmentDate** - Date, Required
+13. **GraduationDate** - Date
+14. **Status** - Choice, Required, Default: Active
     ```
     Active
     Graduated
     Dropped
     On Leave
     ```
-16. **Notes** - Multiple lines text, Plain
+15. **Notes** - Multiple lines text, Plain
 
 ### Step 3: Create Views
 
@@ -443,8 +437,8 @@ For all lists:
 ### Create Indexed Columns
 List Settings → Indexed columns → Create new index:
 - **Appointments**: AppointmentDate, Status
-- **Students**: CAC_EDIPI, Language
-- **Tutors**: CAC_EDIPI
+- **Students**: Email, Language
+- **Tutors**: Email
 - **SessionNotes**: AppointmentID
 
 ### Configure Permissions

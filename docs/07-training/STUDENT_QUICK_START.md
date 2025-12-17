@@ -24,14 +24,14 @@ This guide will help you get started with booking tutoring appointments, managin
 **On Computer:**
 1. Open Microsoft Edge browser
 2. Navigate to: **https://make.powerapps.com**
-3. Sign in with your CAC
+3. Sign in with your dliflc.edu account (MFA required)
 4. Click on **Apps** in left menu
 5. Find: **MARDET - Language Tutoring System**
 6. Click to open
 
 **On Phone/Tablet:**
 1. Download **Power Apps** from app store
-2. Open app and sign in with CAC
+2. Open app and sign in with your dliflc.edu account
 3. Find: **MARDET - Language Tutoring System**
 4. Tap to open
 
@@ -339,7 +339,7 @@ You'll automatically receive:
 
 **Try:**
 1. Use Microsoft Edge (recommended browser)
-2. Check CAC is inserted correctly
+2. Verify your dliflc.edu credentials and MFA
 3. Close all browser windows, reopen
 4. Clear browser cache
 5. Try incognito/private mode

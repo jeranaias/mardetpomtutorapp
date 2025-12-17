@@ -306,7 +306,7 @@ Track these metrics in Power Automate:
 ### Data Handling
 - Emails contain only necessary information
 - No sensitive PII beyond names/ranks
-- Links to PowerApp (CAC-protected)
+- Links to PowerApp (MFA-protected)
 - Encrypted in transit (TLS)
 
 ### Access Control
