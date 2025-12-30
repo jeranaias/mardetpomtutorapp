@@ -22,7 +22,7 @@ This document defines the complete SharePoint list structure for the MARDET Lang
 | TutorID | Number | Yes | Auto-increment, unique identifier |
 | FullName | Single line of text | Yes | Max 100 chars |
 | Email | Single line of text | Yes | Email format validation |
-| Rank | Choice | Yes | Choices: SSgt, GySgt, MSgt, MGySgt, Civilian |
+| Rank | Choice | Yes | Choices: Pvt, PFC, etc., SSgt, GySgt, MSgt, MGySgt, Civilian |
 | Languages | Choice | Yes | Multi-select: Arabic, Russian, Chinese, Korean, Farsi, Spanish, French, Indonesian, Japanese |
 | MaxHoursPerWeek | Number | Yes | Default: 20, Min: 0, Max: 40 |
 | Status | Choice | Yes | Active, Inactive, On Leave. Default: Active |
@@ -185,10 +185,7 @@ This document defines the complete SharePoint list structure for the MARDET Lang
 | StudentID | Lookup | Yes | Lookup to Students list |
 | SnapshotDate | Date | Yes | Date only |
 | CurrentGrade | Single line of text | No | Letter grade or percentage |
-| DLPTListening | Choice | No | 0, 0+, 1, 1+, 2, 2+, 3, 3+ |
-| DLPTReading | Choice | No | 0, 0+, 1, 1+, 2, 2+, 3, 3+ |
-| ModularExams | Multiple lines of text | No | JSON array of exam results |
-| OPIScore | Choice | No | 0, 0+, 1, 1+, 2, 2+, 3, 3+ |
+| ModularExams | Multiple lines of text | No | JSON array of exam results (figuring out better option) |
 | AttendanceRate | Number | No | Percentage 0-100 |
 | TutoringHours | Number | No | Total hours received |
 | Trends | Choice | No | Improving, Stable, Declining |
