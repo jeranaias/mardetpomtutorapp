@@ -538,11 +538,6 @@ Back();
 │  Current Grade: B+ (87%)             │
 │  Trend: ⬆️ Improving                 │
 │                                      │
-│  DLPT Scores                         │
-│  ┌────────────┬────────────┐         │
-│  │ Listening  │  Reading   │         │
-│  │    2+      │     2      │         │
-│  └────────────┴────────────┘         │
 │                                      │
 │  Progress Chart                      │
 │  [Line graph showing grade over time]│
