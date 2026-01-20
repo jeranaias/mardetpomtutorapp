@@ -425,14 +425,9 @@ segment3-powerapp/
 
 ---
 
-## Pass to Claude Code
+## Developer Notes
 
-**Command:**
-```
-I need to build a PowerApp using the SharePoint lists from Segment 2.
-Follow the screen designs in POWERAPP_DESIGN.md and use the formulas 
-from FORMULAS_REFERENCE.md. Deploy per CONFIGURATION_DEPLOYMENT.md.
-```
+Build the PowerApp using SharePoint lists from Segment 2. Follow screen designs in POWERAPP_DESIGN.md, use formulas from FORMULAS_REFERENCE.md, and deploy per CONFIGURATION_DEPLOYMENT.md.
 
 ---
 

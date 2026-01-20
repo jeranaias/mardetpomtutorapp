@@ -1,7 +1,7 @@
 # SharePoint Site Design Guide: MARDET_Tutors
 
 ## Purpose
-This guide helps you customize the SharePoint team site for the **MARDET_Tutors** group (~30 users). Use this with Claude for Chrome to get step-by-step assistance modifying the page.
+This guide helps you customize the SharePoint team site for the **MARDET_Tutors** group (~30 users). Follow the step-by-step instructions or use an AI assistant for help.
 
 ---
 
@@ -225,7 +225,7 @@ This guide helps you customize the SharePoint team site for the **MARDET_Tutors*
 
 ---
 
-## Prompts for Claude (Chrome Extension)
+## AI Assistant Prompts
 
 **Initial Setup:**
 > "I'm customizing a SharePoint site for language tutors. I need a hero section, quick action cards showing today's sessions, a place to access session notes, and tutor-specific resources. Guide me through each web part."

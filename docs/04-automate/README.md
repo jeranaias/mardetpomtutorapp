@@ -441,15 +441,9 @@ segment4-automate/
 
 ---
 
-## Pass to Claude Code
+## Developer Notes
 
-**Command:**
-```
-I need to build Power Automate workflows for the MARDET tutoring system.
-Follow the designs in POWER_AUTOMATE_WORKFLOWS.md and use the setup 
-steps in CONFIGURATION_GUIDE.md. All workflows run as service account 
-pa.svc.mardet.tutoring.
-```
+Build Power Automate workflows following designs in POWER_AUTOMATE_WORKFLOWS.md and setup steps in CONFIGURATION_GUIDE.md. All workflows run as service account pa.svc.mardet.tutoring.
 
 ---
 

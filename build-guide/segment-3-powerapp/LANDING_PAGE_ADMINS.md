@@ -1,7 +1,7 @@
 # SharePoint Site Design Guide: MARDET_Admins
 
 ## Purpose
-This guide helps you customize the SharePoint team site for the **MARDET_Admins** group (~3 users). Use this with Claude for Chrome to get step-by-step assistance modifying the page.
+This guide helps you customize the SharePoint team site for the **MARDET_Admins** group (~3 users). Follow the step-by-step instructions or use an AI assistant for help.
 
 ---
 
@@ -302,7 +302,7 @@ This guide helps you customize the SharePoint team site for the **MARDET_Admins*
 
 ---
 
-## Prompts for Claude (Chrome Extension)
+## AI Assistant Prompts
 
 **Initial Setup:**
 > "I'm building an admin portal in SharePoint for system administrators. I need quick access to all data lists, user management functions, system health status, and pending approval items. Help me design this dashboard."

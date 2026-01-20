@@ -530,15 +530,9 @@ segment5-powerbi/
 
 ---
 
-## Pass to Claude Code
+## Developer Notes
 
-**Command:**
-```
-I need to build PowerBI dashboards for the MARDET tutoring system.
-Connect to SharePoint lists from Segment 2, follow dashboard designs in 
-POWERBI_DASHBOARDS.md, and use DAX formulas from DAX_REFERENCE.md.
-Apply DLI color scheme and configure RLS.
-```
+Build PowerBI dashboards connecting to SharePoint lists from Segment 2. Follow dashboard designs in POWERBI_DASHBOARDS.md, use DAX formulas from DAX_REFERENCE.md. Apply DLI color scheme and configure RLS.
 
 ---
 

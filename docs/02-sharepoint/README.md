@@ -309,16 +309,9 @@ segment2-sharepoint/
 
 ---
 
-## Pass to Claude Code
+## Developer Notes
 
-This entire segment can be handed to Claude Code for reference when building the PowerApp in Segment 3. The data model is now fully documented and ready for app development.
-
-**Command for Claude Code:**
-```
-I have SharePoint lists defined in SHAREPOINT_LISTS_SCHEMA.md. 
-Use this data model to build the PowerApp screens and formulas 
-for the MARDET tutoring system.
-```
+This segment provides the complete data model reference for building the PowerApp in Segment 3. Use SHAREPOINT_LISTS_SCHEMA.md as the authoritative source for all list structures and relationships.
 
 ---
 

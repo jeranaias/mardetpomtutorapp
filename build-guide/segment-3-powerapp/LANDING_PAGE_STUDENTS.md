@@ -1,7 +1,7 @@
 # SharePoint Site Design Guide: MARDET_Students
 
 ## Purpose
-This guide helps you customize the SharePoint team site for the **MARDET_Students** group (~400 users). Use this with Claude for Chrome to get step-by-step assistance modifying the page.
+This guide helps you customize the SharePoint team site for the **MARDET_Students** group (~400 users). Follow the step-by-step instructions or use an AI assistant for help.
 
 ---
 
@@ -202,9 +202,9 @@ This guide helps you customize the SharePoint team site for the **MARDET_Student
 
 ---
 
-## Prompts for Claude (Chrome Extension)
+## AI Assistant Prompts
 
-Use these prompts when working with Claude for Chrome:
+Use these prompts when working with an AI assistant:
 
 **Initial Setup:**
 > "I'm customizing a SharePoint team site for Marine students. I need to add a hero section with a scarlet/gold Marine Corps theme, quick links for booking tutoring sessions, and a resources section. Walk me through each step."

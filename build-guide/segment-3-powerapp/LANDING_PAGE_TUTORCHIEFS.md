@@ -1,7 +1,7 @@
 # SharePoint Site Design Guide: MARDET_TutorChiefs
 
 ## Purpose
-This guide helps you customize the SharePoint team site for the **MARDET_TutorChiefs** group (~7 users). Use this with Claude for Chrome to get step-by-step assistance modifying the page.
+This guide helps you customize the SharePoint team site for the **MARDET_TutorChiefs** group (~7 users). Follow the step-by-step instructions or use an AI assistant for help.
 
 ---
 
@@ -252,7 +252,7 @@ This guide helps you customize the SharePoint team site for the **MARDET_TutorCh
 
 ---
 
-## Prompts for Claude (Chrome Extension)
+## AI Assistant Prompts
 
 **Initial Setup:**
 > "I'm setting up a SharePoint dashboard for leadership/managers. I need KPI summary cards at the top, a pending approvals list in the middle, and quick access to team status and reports. Walk me through this layout."
