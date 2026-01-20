@@ -1,483 +1,353 @@
-# Admin Landing Page Design Guide
+# SharePoint Site Design Guide: MARDET_Admins
 
-## Role: MARDET_Admins (~3 users)
+## Purpose
+This guide helps you customize the SharePoint team site for the **MARDET_Admins** group (~3 users). Use this with Claude for Chrome to get step-by-step assistance modifying the page.
 
-### User Profile
+---
+
+## Target Audience
 - Detachment administrative staff
-- Full system access for management and troubleshooting
-- Handles user management, system configuration, data maintenance
-- Desktop-primary, needs comprehensive views
+- Full system access
+- Need: user management, data operations, system monitoring, all approvals
 
 ---
 
-## Landing Page Layout
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  MARDET Language Tutoring                   [Admin] [Logout]│
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  System Administration Dashboard                            │
-│  Last login: Jan 14, 2025 0730                             │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌─────────────┐ │
-│  │ USERS     │ │ TODAY     │ │ PENDING   │ │ SYSTEM      │ │
-│  │           │ │           │ │           │ │             │ │
-│  │  Tutors:30│ │    45     │ │    5      │ │ ✓ Healthy   │ │
-│  │Students:   │ │ Sessions  │ │ Actions   │ │             │ │
-│  │    412    │ │           │ │           │ │ 0 Errors    │ │
-│  └───────────┘ └───────────┘ └───────────┘ └─────────────┘ │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  ADMIN ACTIONS QUEUE                                 │   │
-│  │                                                      │   │
-│  │  ⚡ 2 New student registrations awaiting setup       │   │
-│  │  ⚡ 1 Tutor deactivation request                     │   │
-│  │  ⚡ 1 Data correction request                        │   │
-│  │  ⚡ 1 Permission change request                      │   │
-│  │                                                      │   │
-│  │  [Process Queue]                                     │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│  ┌──────────────────────────┐ ┌────────────────────────┐   │
-│  │  QUICK ACTIONS           │ │  SYSTEM HEALTH         │   │
-│  │                          │ │                        │   │
-│  │  [+ Add Student]         │ │  SharePoint: ✓ Online  │   │
-│  │  [+ Add Tutor]           │ │  Flows: ✓ 13/13 Active │   │
-│  │  [Manage Users]          │ │  Last Backup: Today    │   │
-│  │  [View Audit Log]        │ │  Storage: 45/100 MB    │   │
-│  │  [Export Data]           │ │                        │   │
-│  │  [System Settings]       │ │  [View Details]        │   │
-│  └──────────────────────────┘ └────────────────────────┘   │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  RECENT ACTIVITY LOG                                 │   │
-│  │                                                      │   │
-│  │  Time     User           Action                     │   │
-│  │  ─────────────────────────────────────────────────  │   │
-│  │  0845     SSgt Smith     Completed session note     │   │
-│  │  0842     LCpl Wilson    Booked appointment         │   │
-│  │  0830     GySgt Jones    Marked no-show             │   │
-│  │  0815     System         Daily reminder emails sent │   │
-│  │  0800     Admin          User import completed      │   │
-│  │                                                      │   │
-│  │  [View Full Audit Log]                              │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  DATA MANAGEMENT                                     │   │
-│  │                                                      │   │
-│  │  [Import Students CSV]  [Import Tutors CSV]         │   │
-│  │  [Bulk Update Status]   [Archive Old Records]       │   │
-│  │  [Generate Reports]     [Backup Data]               │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤
-│ [Dashboard] [Users] [Data] [Approvals] [Reports] [Settings]│
-└─────────────────────────────────────────────────────────────┘
-```
+## Current State (Default SharePoint)
+- Bland default team site
+- No admin tools or quick access
+- No system health visibility
+- No user management shortcuts
 
 ---
 
-## Key Components
+## Desired Design
 
-### 1. Header Section
-**Elements:**
-- App logo/name
-- Admin badge (distinguished from other roles)
-- Last login timestamp
-- Logout
+### Page Layout (Top to Bottom)
 
-**Power Fx:**
 ```
-// Verify admin access
-Set(varIsAdmin,
-    User().Email in ["admin1@dliflc.edu", "admin2@dliflc.edu", "admin3@dliflc.edu"]
-    // Or check against MARDET_Admins group membership
-)
+┌─────────────────────────────────────────────────────────────────┐
+│  HEADER - Minimal                                                │
+│  Title: "System Administration"                                  │
+│  Subtitle: "MARDET Tutoring System - Admin Portal"               │
+│  [Open PowerApp Admin View]                                      │
+└─────────────────────────────────────────────────────────────────┘
 
-If(!varIsAdmin, Navigate(UnauthorizedScreen, ScreenTransition.None))
-```
+┌─────────────────────────────────────────────────────────────────┐
+│  FOUR-COLUMN SECTION - System Stats                              │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐           │
+│  │ STUDENTS │ │ TUTORS   │ │ PENDING  │ │ SYSTEM   │           │
+│  │          │ │          │ │ ACTIONS  │ │          │           │
+│  │   412    │ │    30    │ │    5     │ │ ✓ OK     │           │
+│  │  active  │ │  active  │ │  items   │ │          │           │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘           │
+└─────────────────────────────────────────────────────────────────┘
 
-### 2. KPI Summary Cards
-**Elements:**
-- User counts (tutors, students)
-- Today's session count
-- Pending admin actions
-- System health indicator
+┌─────────────────────────────────────────────────────────────────┐
+│  TWO-COLUMN SECTION                                              │
+│  ┌───────────────────────────┐  ┌───────────────────────────┐   │
+│  │  USER MANAGEMENT          │  │  DATA OPERATIONS          │   │
+│  │                           │  │                           │   │
+│  │  👤 Add Student           │  │  📥 Import Students CSV   │   │
+│  │  👤 Add Tutor             │  │  📥 Import Tutors CSV     │   │
+│  │  📋 View All Students     │  │  📤 Export All Data       │   │
+│  │  📋 View All Tutors       │  │  🗑️ Archive Old Records   │   │
+│  │  🔄 Bulk Status Update    │  │  🔄 Sync to Public Site   │   │
+│  │  ❌ Deactivate User       │  │                           │   │
+│  └───────────────────────────┘  └───────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 
-**Power Fx:**
-```
-// User counts
-Set(varTutorCount, CountRows(Filter(Tutors, Status = "Active")))
-Set(varStudentCount, CountRows(Filter(Students, Status = "Active")))
+┌─────────────────────────────────────────────────────────────────┐
+│  FULL WIDTH SECTION - All Lists Quick Access                     │
+│  Title: "Data Management"                                        │
+│  [Tabs or Icons linking to each SharePoint list]                 │
+│                                                                  │
+│  📋 Students | 📋 Tutors | 📅 Appointments | 📝 SessionNotes    │
+│  📊 ProgressTracking | 📚 Resources | ✅ ApprovalRequests        │
+└─────────────────────────────────────────────────────────────────┘
 
-// Today's sessions
-Set(varTodaySessions,
-    CountRows(Filter(Appointments, DateValue(AppointmentDate) = Today()))
-)
+┌─────────────────────────────────────────────────────────────────┐
+│  TWO-COLUMN SECTION                                              │
+│  ┌───────────────────────────┐  ┌───────────────────────────┐   │
+│  │  PENDING ACTIONS          │  │  SYSTEM HEALTH            │   │
+│  │                           │  │                           │   │
+│  │  [ApprovalRequests List   │  │  SharePoint: ✓ Online     │   │
+│  │   showing ALL pending     │  │  Power Automate: ✓ 13/13  │   │
+│  │   items regardless of     │  │  Last Backup: Today 0300  │   │
+│  │   approver]               │  │  Storage: 45 MB used      │   │
+│  │                           │  │                           │   │
+│  │                           │  │  [M365 Admin Center]      │   │
+│  │                           │  │  [Power Platform Admin]   │   │
+│  └───────────────────────────┘  └───────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 
-// Pending actions (various sources)
-Set(varPendingActions,
-    CountRows(Filter(ApprovalRequests, Status = "Pending")) +
-    // Add other pending items
-    0
-)
+┌─────────────────────────────────────────────────────────────────┐
+│  FULL WIDTH SECTION - Recent Activity / Audit                    │
+│  Title: "Recent System Activity"                                 │
+│  [Site usage analytics or recent modifications list]             │
+└─────────────────────────────────────────────────────────────────┘
 
-// System health (simplified - would check actual services)
-Set(varSystemHealth, "Healthy")
-```
-
-### 3. Admin Actions Queue
-**Elements:**
-- List of pending administrative tasks
-- Registration approvals
-- Deactivation requests
-- Data correction requests
-- Permission changes
-
-**Power Fx:**
-```
-// Combine various pending items
-ClearCollect(colAdminQueue,
-    // Registration requests
-    AddColumns(
-        Filter(ApprovalRequests,
-            Status = "Pending" &&
-            RequestType in ["Student Registration", "Tutor Registration"]
-        ),
-        "QueueType", "Registration",
-        "Description", "New " & RequestType & " - " & Title
-    ),
-    // Other admin tasks from a dedicated AdminTasks list if exists
-)
-
-// Display
-ForAll(colAdminQueue, /* render item */)
-```
-
-### 4. Quick Actions Panel
-**Elements:**
-- Add Student button
-- Add Tutor button
-- Manage Users button
-- View Audit Log button
-- Export Data button
-- System Settings button
-
-**Power Fx:**
-```
-// Add Student - navigate to form
-Navigate(AddStudentScreen, ScreenTransition.Cover)
-
-// Add Tutor - navigate to form
-Navigate(AddTutorScreen, ScreenTransition.Cover)
-
-// Manage Users - navigate to user management
-Navigate(UserManagementScreen, ScreenTransition.Cover)
-
-// Export Data - trigger Power Automate flow
-// Flow generates Excel file and emails to admin
-```
-
-### 5. System Health Panel
-**Elements:**
-- SharePoint connection status
-- Power Automate flows status
-- Last backup date
-- Storage usage
-
-**Power Fx:**
-```
-// These would typically be monitored via Azure/M365 admin center
-// For in-app display, can check basic connectivity:
-
-// Test SharePoint connection
-Set(varSPConnected,
-    !IsError(First(Tutors))  // Simple connectivity test
-)
-
-// Flow status would need to be tracked in a separate list
-// or queried via Power Automate admin connector (premium)
-
-// Storage estimate
-Set(varStorageUsed,
-    (CountRows(Appointments) * 0.001) +  // ~1KB per appointment
-    (CountRows(SessionNotes) * 0.003) +  // ~3KB per note
-    (CountRows(Students) * 0.001) +
-    (CountRows(Tutors) * 0.001)
-) & " MB (estimated)"
-```
-
-### 6. Recent Activity Log
-**Elements:**
-- Recent system activity
-- Timestamp, user, action
-- Link to full audit log
-
-**Power Fx:**
-```
-// If tracking activity in SharePoint audit logs:
-// This would require Power Automate to periodically pull audit data
-// into a SharePoint list for display
-
-// Simplified: Show recent modifications
-Sort(
-    Union(
-        AddColumns(
-            TopN(Filter(Appointments, Modified >= DateAdd(Now(), -24, TimeUnit.Hours)), 10, Modified, SortOrder.Descending),
-            "ActivityType", "Appointment",
-            "ActivityUser", 'Modified By'.DisplayName,
-            "ActivityTime", Modified
-        ),
-        AddColumns(
-            TopN(Filter(SessionNotes, Modified >= DateAdd(Now(), -24, TimeUnit.Hours)), 10, Modified, SortOrder.Descending),
-            "ActivityType", "Session Note",
-            "ActivityUser", 'Modified By'.DisplayName,
-            "ActivityTime", Modified
-        )
-    ),
-    ActivityTime,
-    SortOrder.Descending
-)
-```
-
-### 7. Data Management Panel
-**Elements:**
-- Import Students CSV
-- Import Tutors CSV
-- Bulk Update Status
-- Archive Old Records
-- Generate Reports
-- Backup Data
-
-**Power Fx:**
-```
-// Import CSV - would use Power Automate flow
-// Button triggers flow that:
-// 1. Creates Form to upload file
-// 2. Processes CSV
-// 3. Creates/updates records
-
-// Archive Old Records
-// Trigger flow to move old appointments to archive list
-Set(varShowArchiveDialog, true);
-// Dialog confirms date range
-// Flow moves records older than X days
-
-// Generate Reports
-// Open Power BI dashboard or trigger report generation flow
-Launch("https://app.powerbi.com/groups/[workspace]/reports/[report]")
-```
-
-### 8. Bottom Navigation
-**Elements:**
-- Dashboard (current)
-- Users (user management)
-- Data (data operations)
-- Approvals (all approval requests)
-- Reports (Power BI)
-- Settings (system configuration)
-
----
-
-## Admin-Only Functions
-
-### User Management
-```
-// Add user manually
-Patch(Students,
-    Defaults(Students),
-    {
-        StudentID: Max(Students, StudentID) + 1,
-        FullName: varNewStudentName,
-        Email: varNewStudentEmail,
-        // ... other fields
-    }
-)
-
-// Deactivate user
-Patch(Students,
-    LookUp(Students, ID = varSelectedStudent.ID),
-    {Status: "Inactive"}
-)
-
-// Reactivate user
-Patch(Students,
-    LookUp(Students, ID = varSelectedStudent.ID),
-    {Status: "Active"}
-)
-```
-
-### Bulk Operations
-```
-// Bulk status update
-ForAll(
-    Filter(Students, Status = "Active" && GraduationDate < Today()),
-    Patch(Students, ThisRecord, {Status: "Graduated"})
-)
-
-// Bulk import (via Power Automate)
-// Admin uploads CSV → Flow processes → Creates records
-```
-
-### Data Correction
-```
-// Edit any record
-Patch([ListName],
-    LookUp([ListName], ID = varSelectedRecord.ID),
-    {
-        [FieldName]: varNewValue
-    }
-)
-
-// Admin can edit records that regular users cannot
-// No row-level security restrictions for admins
-```
-
-### System Configuration
-```
-// Settings stored in a Config list
-Set(varSystemSettings,
-    LookUp(SystemConfig, Key = "Settings")
-)
-
-// Update settings
-Patch(SystemConfig,
-    varSystemSettings,
-    {
-        Value: JSON(
-            {
-                MaxSessionDuration: varMaxDuration,
-                DefaultReminderHours: varReminderHours,
-                AllowStudentBooking: varAllowBooking
-            }
-        )
-    }
-)
+┌─────────────────────────────────────────────────────────────────┐
+│  TWO-COLUMN SECTION                                              │
+│  ┌───────────────────────────┐  ┌───────────────────────────┐   │
+│  │  DOCUMENTATION            │  │  SUPPORT & CONTACTS       │   │
+│  │                           │  │                           │   │
+│  │  📖 Admin Guide           │  │  🎫 DCSIT Helpdesk        │   │
+│  │  📖 User Management SOP   │  │  📧 Service Account Info  │   │
+│  │  📖 Troubleshooting       │  │  📞 Cybersecurity Office  │   │
+│  │  📖 Data Retention Policy │  │  🔗 Azure AD Portal       │   │
+│  └───────────────────────────┘  └───────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Data Access (Security)
+## Step-by-Step Instructions
 
-Admins have FULL ACCESS to:
-- All lists (Read, Write, Delete)
-- All user records
-- All appointments
-- All session notes
-- All progress tracking
-- All approval requests
-- System configuration
+### Step 1: Enter Edit Mode
+1. Go to the Admins site home page
+2. Click **Edit**
 
-**No row-level filtering for admins.**
+### Step 2: Clear Default Content
+1. Remove all default web parts
+2. Start fresh
+
+### Step 3: Add Header Section
+1. Click **+** → **Text** web part (or minimal Hero)
+2. Configure:
+   - Heading 1: "System Administration"
+   - Body: "MARDET Tutoring System - Admin Portal"
+3. Add **Button** web part:
+   - Text: "Open PowerApp Admin View"
+   - Link: [PowerApp URL with admin context]
+
+### Step 4: Add System Stats Section
+1. Click **+** → **Section** → **Four columns**
+2. In each column, add **Call to action** or **Text** web part:
+
+   **Card 1 - Students:**
+   - Title: "Students"
+   - Number: "412" (or placeholder)
+   - Subtitle: "active"
+   - Link: [Students list]
+
+   **Card 2 - Tutors:**
+   - Title: "Tutors"
+   - Number: "30"
+   - Subtitle: "active"
+   - Link: [Tutors list]
+
+   **Card 3 - Pending Actions:**
+   - Title: "Pending"
+   - Number: Shows count
+   - Subtitle: "actions"
+   - Link: [ApprovalRequests filtered to Pending]
+
+   **Card 4 - System:**
+   - Title: "System"
+   - Number: "✓ OK" or status indicator
+   - Subtitle: "health"
+   - Link: [Site settings or health page]
+
+### Step 5: Add User Management & Data Operations Section
+1. Click **+** → **Section** → **Two columns**
+2. LEFT column - User Management: Add **Quick Links**
+   - Title: "User Management"
+   - Layout: **List**
+   - Links:
+     | Title | Icon | Link |
+     |-------|------|------|
+     | Add Student | Add | [Students list new form] |
+     | Add Tutor | Add | [Tutors list new form] |
+     | View All Students | List | [Students list] |
+     | View All Tutors | List | [Tutors list] |
+     | Bulk Status Update | Sync | [PowerApp or instructions] |
+     | Deactivate User | Block | [Instructions or form] |
+
+3. RIGHT column - Data Operations: Add **Quick Links**
+   - Title: "Data Operations"
+   - Layout: **List**
+   - Links:
+     | Title | Link |
+     |-------|------|
+     | Import Students CSV | [Power Automate flow or instructions] |
+     | Import Tutors CSV | [Power Automate flow or instructions] |
+     | Export All Data | [Export instructions or flow] |
+     | Archive Old Records | [Archive flow trigger] |
+     | Sync to Public Site | [GitHub Actions or manual process] |
+
+### Step 6: Add Data Management Section (All Lists)
+1. Click **+** → **Section** → **Full width**
+2. Add **Text** web part:
+   - Heading 2: "Data Management"
+3. Add **Quick Links** web part:
+   - Layout: **Tiles** or **Icons**
+   - Links to all 7 SharePoint lists:
+     | Title | Icon | Link |
+     |-------|------|------|
+     | Students | People | [Students list URL] |
+     | Tutors | People | [Tutors list URL] |
+     | Appointments | Calendar | [Appointments list URL] |
+     | SessionNotes | Document | [SessionNotes list URL] |
+     | ProgressTracking | Chart | [ProgressTracking list URL] |
+     | Resources | Library | [Resources list URL] |
+     | ApprovalRequests | Approve | [ApprovalRequests list URL] |
+
+### Step 7: Add Pending Actions & System Health Section
+1. Click **+** → **Section** → **Two columns**
+2. LEFT column: Add **List** web part
+   - Title: "All Pending Actions"
+   - Select: **ApprovalRequests** list
+   - View: "All Pending" (no approver filter - admins see all)
+     - Filter: Status = Pending
+     - Columns: Type, RequestedBy, Date, AssignedTo
+
+3. RIGHT column: Add **Text** web part
+   - Title: "System Health"
+   - Content (update manually or link to monitoring):
+   ```
+   **Status Check**
+
+   ✓ SharePoint: Online
+   ✓ Power Automate: 13/13 flows active
+   ✓ Last Backup: [Auto-updated by M365]
+   ✓ Storage: ~45 MB of 25 GB used
+
+   **Admin Links**
+   - [M365 Admin Center](https://admin.microsoft.com)
+   - [Power Platform Admin](https://admin.powerplatform.microsoft.com)
+   - [Azure AD Portal](https://portal.azure.com)
+   - [SharePoint Admin](https://dliflc01-admin.sharepoint.com)
+   ```
+
+### Step 8: Add Activity Section
+1. Click **+** → **Section** → **Full width**
+2. Add **Text** web part:
+   - Heading 2: "Recent System Activity"
+3. Options:
+   - Add **Site analytics** web part (shows page views, visitors)
+   - Add **Recent documents** web part
+   - Link to audit logs: "View full audit log in Microsoft Purview"
+
+### Step 9: Add Documentation & Support Section
+1. Click **+** → **Section** → **Two columns**
+2. LEFT column - Documentation: Add **Quick Links**
+   - Links:
+     | Title | Link |
+     |-------|------|
+     | Admin Guide | [Document in library] |
+     | User Management SOP | [Document] |
+     | Troubleshooting Guide | [Document] |
+     | Data Retention Policy | [Document] |
+     | Build Guide (GitHub) | https://github.com/jeranaias/mardetpomtutorapp |
+
+3. RIGHT column - Support: Add **Quick Links**
+   - Links:
+     | Title | Link |
+     |-------|------|
+     | DCSIT Helpdesk | https://dliflc.service-now.com |
+     | Service Account Info | [Internal doc with pa.svc details] |
+     | Cybersecurity Office | mailto:ia@dliflc.edu |
+     | Azure AD Portal | https://portal.azure.com |
+     | Report Security Issue | [Security incident form] |
+
+### Step 10: Update Navigation
+1. Edit left navigation:
+   - Home
+   - Users (submenu: Students, Tutors)
+   - Data (submenu: All Lists, Import, Export)
+   - Approvals
+   - Reports → [Power BI]
+   - Settings
+   - Documentation
+   - Site contents
+
+### Step 11: Apply Theme
+1. **Settings** → **Change the look**
+2. Admin theme options:
+   - **Dark theme** for distinction: #1a1a2e primary
+   - Or **Scarlet**: #CC0000
+3. Consider adding "ADMIN" badge/indicator in header
+
+### Step 12: Publish
+1. Click **Publish**
+2. Verify all list links work
+3. Test admin-specific functions
 
 ---
 
-## Audit Trail
-
-Admin actions should be logged:
-```
-// After any admin action, log it
-Patch(AuditLog,
-    Defaults(AuditLog),
-    {
-        Timestamp: Now(),
-        User: User().Email,
-        Action: varActionType,
-        Details: varActionDetails,
-        RecordID: varAffectedRecordID,
-        ListName: varAffectedList
-    }
-)
-```
-
----
-
-## Data Import Templates
-
-### Students CSV Template
-```csv
-FullName,Email,Rank,Language,Class,Company,Platoon,Squad,EnrollmentDate,Status
-John Doe,john.doe@dliflc.edu,LCpl,Arabic,ARA-001-2025,Alpha,1,1,2025-01-06,Active
-```
-
-### Tutors CSV Template
-```csv
-FullName,Email,Rank,Languages,MaxHoursPerWeek,Status,OfficeLocation,HireDate
-Jane Smith,jane.smith@dliflc.edu,SSgt,Arabic;Farsi,20,Active,Bldg 614,2023-01-15
-```
-
----
-
-## Emergency Actions
-
-### Disable All Bookings
-```
-// Set system-wide flag
-Patch(SystemConfig,
-    LookUp(SystemConfig, Key = "BookingEnabled"),
-    {Value: "false"}
-)
-// All booking screens check this flag before allowing new bookings
-```
-
-### Purge User Data (GDPR-style)
-```
-// Remove all records for a specific user
-// Students
-Remove(Students, LookUp(Students, Email = varUserEmail));
-
-// Their appointments
-RemoveIf(Appointments, StudentEmail = varUserEmail);
-
-// Their progress
-RemoveIf(ProgressTracking, StudentEmail = varUserEmail);
-
-// Log the purge
-Patch(AuditLog, Defaults(AuditLog), {
-    Action: "Data Purge",
-    Details: "All records for " & varUserEmail & " removed",
-    // ...
-})
-```
-
-### Force Password Reset (Service Account)
-```
-// This would be done through Azure AD admin center
-// Link to admin portal:
-Launch("https://portal.azure.com/#blade/Microsoft_AAD_IAM/UsersManagementMenuBlade/AllUsers")
-```
-
----
-
-## Color Scheme
+## Color Reference
 
 | Element | Color | Hex |
 |---------|-------|-----|
-| Header | Marine Corps Scarlet | #CC0000 |
-| Admin Badge | Dark Gold | #B8860B |
-| System Healthy | Green | #28A745 |
-| System Warning | Orange | #FFC107 |
-| System Error | Red | #DC3545 |
-| Action Button | Blue | #007BFF |
-| Destructive Action | Red | #DC3545 |
+| Primary/Header | Dark Navy or Black | #1a1a2e or #000000 |
+| Accent | Gold | #FFD700 |
+| System OK | Green | #28A745 |
+| Warning/Pending | Orange | #FFC107 |
+| Error/Critical | Red | #DC3545 |
+| Admin Badge | Purple or Gold | #6f42c1 or #FFD700 |
+
+---
+
+## Assets Needed
+
+1. **Admin documentation** (upload to Documents library):
+   - Admin Guide.pdf
+   - User Management SOP.pdf
+   - Troubleshooting Guide.pdf
+   - Data Retention Policy.pdf
+
+2. **Service account reference** document (internal only)
+
+3. **Import templates** (CSV files for bulk import)
+
+---
+
+## Prompts for Claude (Chrome Extension)
+
+**Initial Setup:**
+> "I'm building an admin portal in SharePoint for system administrators. I need quick access to all data lists, user management functions, system health status, and pending approval items. Help me design this dashboard."
+
+**All Lists Access:**
+> "How do I create a Quick Links web part in SharePoint that displays all my lists as clickable tiles with icons?"
+
+**System Health Section:**
+> "I want to display system health information on my SharePoint admin page including links to M365 Admin Center, Power Platform Admin, and Azure Portal. What's the best web part for this?"
+
+**Pending Actions Across Approvers:**
+> "I have an ApprovalRequests list. As an admin, I need to see ALL pending items regardless of who the assigned approver is. How do I create this view?"
+
+**Admin Links:**
+> "What are the direct URLs for M365 Admin Center, Power Platform Admin Center, Azure AD Portal, and SharePoint Admin Center that I should add to my admin dashboard?"
+
+---
+
+## Key Admin URLs Reference
+
+```
+M365 Admin Center:      https://admin.microsoft.com
+Power Platform Admin:   https://admin.powerplatform.microsoft.com
+Azure AD Portal:        https://portal.azure.com
+SharePoint Admin:       https://dliflc01-admin.sharepoint.com
+Power Automate:         https://make.powerautomate.com
+Power BI Service:       https://app.powerbi.com
+Microsoft Purview:      https://compliance.microsoft.com
+```
 
 ---
 
 ## Testing Checklist
 
-- [ ] Only admins can access this screen
-- [ ] User counts display correctly
-- [ ] Can add new student
-- [ ] Can add new tutor
-- [ ] Can deactivate user
-- [ ] Can reactivate user
-- [ ] Activity log shows recent changes
-- [ ] System health indicators work
-- [ ] Data export functions
-- [ ] Audit logging captures admin actions
-- [ ] Navigation works correctly
-- [ ] Emergency disable booking works
+- [ ] Header displays with admin context
+- [ ] Stats cards show (placeholder numbers OK)
+- [ ] User management links work (add forms open)
+- [ ] Data operations links functional
+- [ ] All 7 list tiles link correctly
+- [ ] Pending actions shows ALL pending items
+- [ ] System health section has correct links
+- [ ] Activity/analytics displays
+- [ ] Documentation links work
+- [ ] Support links correct
+- [ ] Navigation updated for admin workflow
+- [ ] Theme applied (dark or distinctive)
+- [ ] Mobile view acceptable
+- [ ] Published and accessible to MARDET_Admins group only

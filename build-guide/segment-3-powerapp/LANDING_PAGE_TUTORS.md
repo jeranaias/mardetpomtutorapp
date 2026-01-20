@@ -1,372 +1,258 @@
-# Tutor Landing Page Design Guide
+# SharePoint Site Design Guide: MARDET_Tutors
 
-## Role: MARDET_Tutors (~30 users)
-
-### User Profile
-- Senior NCOs (SSgt - MGySgt) or Civilians
-- Teach one or more of 9 languages
-- Need to manage their schedule and document sessions
-- Desktop-primary (usually in office)
+## Purpose
+This guide helps you customize the SharePoint team site for the **MARDET_Tutors** group (~30 users). Use this with Claude for Chrome to get step-by-step assistance modifying the page.
 
 ---
 
-## Landing Page Layout
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  MARDET Language Tutoring                    [User] [Logout]│
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  Good morning, SSgt Smith!                                  │
-│  Languages: Arabic, Farsi | Status: Active                  │
-│  This week: 12/20 hours scheduled                           │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  TODAY'S SCHEDULE - Tuesday, Jan 14                  │   │
-│  │                                                      │   │
-│  │  0900  LCpl Wilson    Arabic    Grammar    [Notes]  │   │
-│  │  1030  PFC Martinez   Arabic    Vocab      [Notes]  │   │
-│  │  1300  Cpl Thompson   Farsi     DLPT Prep  [Notes]  │   │
-│  │  1500  LCpl Davis     Arabic    Listening  [Notes]  │   │
-│  │                                                      │   │
-│  │  [View Full Calendar]                                │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│  ┌─────────────────────┐  ┌─────────────────────┐          │
-│  │  PENDING NOTES      │  │   QUICK STATS       │          │
-│  │                     │  │                     │          │
-│  │  3 sessions need    │  │  This Week:         │          │
-│  │  documentation      │  │  Sessions: 15       │          │
-│  │                     │  │  Students: 8        │          │
-│  │  - Yesterday 1400   │  │  Hours: 12.5        │          │
-│  │  - Yesterday 1530   │  │                     │          │
-│  │  - Monday 0900      │  │  This Month:        │          │
-│  │                     │  │  Sessions: 42       │          │
-│  │  [Complete Notes]   │  │  No-shows: 2        │          │
-│  └─────────────────────┘  └─────────────────────┘          │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  MY STUDENTS (Active)                                │   │
-│  │                                                      │   │
-│  │  Name           Language  Class       Last Session  │   │
-│  │  ─────────────────────────────────────────────────  │   │
-│  │  LCpl Wilson    Arabic    ARA-001     2 days ago    │   │
-│  │  PFC Martinez   Arabic    ARA-002     Today         │   │
-│  │  Cpl Thompson   Farsi     FAR-001     1 week ago    │   │
-│  │  LCpl Davis     Arabic    ARA-001     3 days ago    │   │
-│  │                                                      │   │
-│  │  [View All Students]                                 │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤
-│  [Home]  [Calendar]  [Students]  [Session Notes]  [Help]   │
-└─────────────────────────────────────────────────────────────┘
-```
+## Target Audience
+- Senior NCOs (SSgt - MGySgt) and Civilians
+- Language instructors
+- Need quick access to: daily schedule, session notes, student info, resources
 
 ---
 
-## Key Components
-
-### 1. Header Section
-**Elements:**
-- App logo/name
-- User display name and role indicator
-- Logout button
-
-**Power Fx:**
-```
-// Get current tutor info
-Set(varCurrentTutor,
-    LookUp(Tutors, Email = User().Email)
-)
-
-// Verify tutor exists
-If(IsBlank(varCurrentTutor),
-    Navigate(UnauthorizedScreen, ScreenTransition.None)
-)
-```
-
-### 2. Welcome Banner with Stats
-**Elements:**
-- Personalized greeting with rank
-- Languages taught
-- Weekly hours progress bar
-
-**Power Fx:**
-```
-// Greeting based on time
-Switch(
-    true,
-    Hour(Now()) < 12, "Good morning, ",
-    Hour(Now()) < 17, "Good afternoon, ",
-    "Good evening, "
-) & varCurrentTutor.Rank & " " &
-    Last(Split(varCurrentTutor.FullName, " ")).Value & "!"
-
-// Weekly hours calculation
-Set(varWeeklyHours,
-    Sum(
-        Filter(Appointments,
-            TutorID.Id = varCurrentTutor.ID &&
-            Status = "Completed" &&
-            AppointmentDate >= DateAdd(Today(), -Weekday(Today())+1, TimeUnit.Days) &&
-            AppointmentDate <= Today()
-        ),
-        Duration
-    ) / 60
-)
-
-// Progress bar value
-varWeeklyHours / varCurrentTutor.MaxHoursPerWeek
-```
-
-### 3. Today's Schedule
-**Elements:**
-- List of today's appointments
-- Time, student name, language, focus area
-- Quick "Add Notes" button for completed sessions
-- Color coding by status
-
-**Power Fx:**
-```
-// Today's appointments
-Sort(
-    Filter(Appointments,
-        TutorID.Id = varCurrentTutor.ID &&
-        DateValue(AppointmentDate) = Today()
-    ),
-    AppointmentDate,
-    SortOrder.Ascending
-)
-
-// Status color
-Switch(ThisItem.Status,
-    "Scheduled", ColorValue("#007BFF"),  // Blue
-    "Completed", ColorValue("#28A745"),  // Green
-    "NoShow", ColorValue("#DC3545"),     // Red
-    "Cancelled", ColorValue("#6C757D")   // Gray
-)
-
-// Show "Add Notes" only for completed without notes
-Visible = ThisItem.Status = "Completed" &&
-    IsBlank(LookUp(SessionNotes, AppointmentID.Id = ThisItem.ID))
-```
-
-### 4. Pending Notes Alert
-**Elements:**
-- Count of sessions needing documentation
-- List of sessions without notes
-- Quick link to add notes
-
-**Power Fx:**
-```
-// Sessions needing notes (completed but no SessionNotes record)
-Set(varPendingNotes,
-    Filter(Appointments,
-        TutorID.Id = varCurrentTutor.ID &&
-        Status = "Completed" &&
-        IsBlank(LookUp(SessionNotes, AppointmentID.Id = ID))
-    )
-)
-
-// Count
-CountRows(varPendingNotes)
-
-// Alert visibility
-Visible = CountRows(varPendingNotes) > 0
-```
-
-### 5. Quick Stats Card
-**Elements:**
-- This week: sessions, unique students, hours
-- This month: total sessions, no-show count
-- Visual indicators
-
-**Power Fx:**
-```
-// This week sessions
-CountRows(
-    Filter(Appointments,
-        TutorID.Id = varCurrentTutor.ID &&
-        Status in ["Completed", "Scheduled"] &&
-        AppointmentDate >= DateAdd(Today(), -Weekday(Today())+1, TimeUnit.Days)
-    )
-)
-
-// Unique students this week
-CountRows(
-    Distinct(
-        Filter(Appointments,
-            TutorID.Id = varCurrentTutor.ID &&
-            AppointmentDate >= DateAdd(Today(), -Weekday(Today())+1, TimeUnit.Days)
-        ),
-        StudentID.Id
-    )
-)
-
-// Monthly no-shows
-CountRows(
-    Filter(Appointments,
-        TutorID.Id = varCurrentTutor.ID &&
-        Status = "NoShow" &&
-        Month(AppointmentDate) = Month(Today()) &&
-        Year(AppointmentDate) = Year(Today())
-    )
-)
-```
-
-### 6. My Students Gallery
-**Elements:**
-- Students who have had appointments with this tutor
-- Language, class, days since last session
-- Warning indicator if student hasn't had session in 2+ weeks
-
-**Power Fx:**
-```
-// Get unique students for this tutor
-AddColumns(
-    Distinct(
-        Filter(Appointments,
-            TutorID.Id = varCurrentTutor.ID
-        ),
-        StudentID.Id
-    ),
-    "StudentRecord", LookUp(Students, ID = StudentID.Id),
-    "LastSession",
-        Max(
-            Filter(Appointments,
-                TutorID.Id = varCurrentTutor.ID &&
-                StudentID.Id = StudentID.Id &&
-                Status = "Completed"
-            ),
-            AppointmentDate
-        )
-)
-
-// Days since last session
-DateDiff(ThisItem.LastSession, Today(), TimeUnit.Days)
-
-// Warning icon visible if > 14 days
-Visible = DateDiff(ThisItem.LastSession, Today(), TimeUnit.Days) > 14
-```
-
-### 7. Bottom Navigation
-**Elements:**
-- Home (current screen)
-- Calendar (full schedule view)
-- Students (student list with details)
-- Session Notes (documentation area)
-- Help (FAQ/contact)
+## Current State (Default SharePoint)
+- Bland default team site
+- Generic News web part
+- Default Quick Links
+- No tutor-specific tools or information
 
 ---
 
-## Data Filters (Security)
+## Desired Design
 
-Tutors should ONLY see:
-- Their own appointments
-- Students assigned to them (via appointments)
-- Their own session notes
-- All resources (for recommendation)
+### Page Layout (Top to Bottom)
 
-**Row-Level Security Filter:**
 ```
-// Appointments - only assigned to this tutor
-TutorID.Id = varCurrentTutor.ID
+┌─────────────────────────────────────────────────────────────────┐
+│  HERO SECTION - Full Width                                       │
+│  Background: Professional teaching/education themed              │
+│  Title: "Tutor Portal"                                           │
+│  Subtitle: "Manage your schedule. Document sessions. Support     │
+│            student success."                                     │
+│  Button: "Open Tutor App" → Links to PowerApp                    │
+└─────────────────────────────────────────────────────────────────┘
 
-// Students - only those with appointments with this tutor
-StudentID.Id in
-    Distinct(
-        Filter(Appointments, TutorID.Id = varCurrentTutor.ID),
-        StudentID.Id
-    )
+┌─────────────────────────────────────────────────────────────────┐
+│  THREE-COLUMN SECTION - Quick Stats Cards                        │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐              │
+│  │ TODAY'S     │  │ PENDING     │  │ THIS WEEK   │              │
+│  │ SESSIONS    │  │ NOTES       │  │             │              │
+│  │    [#]      │  │   [#]       │  │  [#] hrs    │              │
+│  │ View Today  │  │ Complete    │  │  scheduled  │              │
+│  └─────────────┘  └─────────────┘  └─────────────┘              │
+│  (Note: Static cards - link to PowerApp for live data)          │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  TWO-COLUMN SECTION                                              │
+│  ┌───────────────────────────┐  ┌───────────────────────────┐   │
+│  │  QUICK ACTIONS            │  │  TODAY'S SCHEDULE         │   │
+│  │                           │  │                           │   │
+│  │  📅 View My Schedule      │  │  [Appointments List -     │   │
+│  │  📝 Add Session Notes     │  │   filtered to today]      │   │
+│  │  👥 My Students           │  │                           │   │
+│  │  📚 Resource Library      │  │  or                       │   │
+│  │  📊 My Stats              │  │                           │   │
+│  │  ⚙️ Update Availability   │  │  [Calendar view embed]    │   │
+│  └───────────────────────────┘  └───────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  FULL WIDTH SECTION - Document Session Notes                     │
+│  Title: "Session Documentation"                                  │
+│  [Embedded SessionNotes list - recent entries or form link]      │
+│  Button: "Add New Session Note"                                  │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  TWO-COLUMN SECTION                                              │
+│  ┌───────────────────────────┐  ┌───────────────────────────┐   │
+│  │  ANNOUNCEMENTS            │  │  TUTOR RESOURCES          │   │
+│  │  [News web part]          │  │                           │   │
+│  │                           │  │  📖 Tutor Handbook        │   │
+│  │                           │  │  📋 Session Note Guide    │   │
+│  │                           │  │  📞 Contact Tutor Chief   │   │
+│  │                           │  │  🔗 DLPT Resources        │   │
+│  └───────────────────────────┘  └───────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Quick Actions
+## Step-by-Step Instructions
 
-### Mark Session Complete
-```
-// From today's schedule - mark as completed
-UpdateIf(Appointments,
-    ID = ThisItem.ID,
-    {Status: "Completed"}
-);
-Navigate(SessionNotesScreen, ScreenTransition.Cover, {AppointmentRecord: ThisItem});
-```
+### Step 1: Enter Edit Mode
+1. Go to the Tutors site home page
+2. Click **Edit** in the top right corner
 
-### Mark No-Show
-```
-// Mark student as no-show
-UpdateIf(Appointments,
-    ID = ThisItem.ID,
-    {Status: "NoShow"}
-);
-// Trigger no-show notification flow automatically
-Notify("Marked as no-show. Notification sent.", NotificationType.Warning);
-```
+### Step 2: Delete Default Content
+1. Remove default News web part
+2. Remove default Quick Links
+3. Clear any other placeholder content
 
-### Quick Session Note
-```
-// Navigate to session notes with pre-filled appointment
-Navigate(SessionNotesScreen, ScreenTransition.Cover,
-    {
-        AppointmentRecord: ThisItem,
-        StudentRecord: LookUp(Students, ID = ThisItem.StudentID.Id)
-    }
-)
-```
+### Step 3: Add Hero Section
+1. Click **+** → **Hero** web part
+2. Configure:
+   - Layout: **Full width**
+   - **Change image**: Professional education/teaching theme
+     - Suggested: Classroom setting, language learning imagery
+   - **Title**: "Tutor Portal"
+   - **Subtitle**: "Manage your schedule. Document sessions. Support student success."
+   - **Call to action button**:
+     - Text: "Open Tutor App"
+     - Link: [PowerApp URL]
+
+### Step 4: Add Quick Stats Section (Call to Action Cards)
+1. Click **+** → **Section** → **Three columns**
+2. In each column, add **Call to action** web part:
+
+   **Column 1 - Today's Sessions:**
+   - Title: "Today's Sessions"
+   - Description: "View your schedule"
+   - Button: "View Today" → [PowerApp URL]
+   - Background: Use accent color
+
+   **Column 2 - Pending Notes:**
+   - Title: "Session Notes"
+   - Description: "Document completed sessions"
+   - Button: "Add Notes" → [PowerApp URL or SessionNotes form]
+   - Background: Warning color if pending
+
+   **Column 3 - Weekly Hours:**
+   - Title: "This Week"
+   - Description: "Track your hours"
+   - Button: "View Stats" → [PowerApp URL]
+   - Background: Use accent color
+
+### Step 5: Add Quick Actions & Schedule Section
+1. Click **+** → **Section** → **Two columns** (1/3 + 2/3 split if available)
+2. LEFT column: Add **Quick Links** web part
+   - Layout: **List** or **Compact**
+   - Add links:
+     | Title | Icon | Link |
+     |-------|------|------|
+     | View My Schedule | Calendar | [PowerApp] |
+     | Add Session Notes | Edit | [PowerApp or SP form] |
+     | My Students | People | [PowerApp] |
+     | Resource Library | Library | [Resources page] |
+     | My Stats | Chart | [PowerApp] |
+     | Update Availability | Settings | [Tutors list edit form] |
+
+3. RIGHT column: Add **List** web part
+   - Select: **Appointments** list
+   - Create view: "Today's Schedule"
+     - Filter: Date = [Today]
+     - Sort: Time ascending
+     - Columns: Time, Student, Language, Focus Area, Status
+   - Alternative: Add **Calendar** web part if preferred
+
+### Step 6: Add Session Documentation Section
+1. Click **+** → **Section** → **Full width**
+2. Add **Text** web part:
+   - Heading 2: "Session Documentation"
+   - Body: "Complete session notes within 24 hours of each tutoring session."
+3. Add **Button** web part:
+   - Text: "Add New Session Note"
+   - Link: [SessionNotes new item form URL]
+4. Optional: Add **List** web part showing recent SessionNotes
+
+### Step 7: Add Announcements & Resources Section
+1. Click **+** → **Section** → **Two columns**
+2. LEFT column: Add **News** web part
+   - Layout: **List**
+   - Source: This site
+   - Show: 5 items
+3. RIGHT column: Add **Quick Links** web part
+   - Title: "Tutor Resources"
+   - Layout: **List**
+   - Links:
+     | Title | Link |
+     |-------|------|
+     | Tutor Handbook | [Document library link] |
+     | Session Note Best Practices | [Document link] |
+     | Contact Tutor Chief | mailto:tutorchief@dliflc.edu |
+     | DLPT Prep Materials | [Resources link] |
+     | Report an Issue | [Helpdesk or form link] |
+
+### Step 8: Update Navigation
+1. Edit left navigation
+2. Configure:
+   - Home
+   - My Schedule → [PowerApp]
+   - Session Notes → [SessionNotes list]
+   - My Students → [PowerApp]
+   - Resources → [Document library]
+   - Announcements → [News page]
+
+### Step 9: Apply Theme
+1. **Settings** → **Change the look** → **Theme**
+2. Primary color: **#CC0000** (Scarlet)
+3. Or use a professional blue/gray theme for tutor distinction:
+   - Primary: **#003366** (Navy blue) - differentiates from student site
+
+### Step 10: Publish
+1. Click **Publish**
+2. Verify all links
+3. Test on different devices
 
 ---
 
-## Color Scheme
+## Color Reference
 
 | Element | Color | Hex |
 |---------|-------|-----|
-| Header | Marine Corps Scarlet | #CC0000 |
-| Primary Button | Gold | #FFD700 |
-| Scheduled | Blue | #007BFF |
-| Completed | Green | #28A745 |
-| No-Show | Red | #DC3545 |
-| Cancelled | Gray | #6C757D |
-| Alert/Warning | Orange | #FFC107 |
+| Primary/Header | Marine Scarlet OR Navy | #CC0000 or #003366 |
+| Accent | Gold | #FFD700 |
+| Pending/Warning | Orange | #FFC107 |
+| Success | Green | #28A745 |
+| Background | Light Gray | #F5F5F5 |
 
 ---
 
-## Status Workflow
+## Assets Needed
 
-```
-Scheduled → [Session Time Passes]
-    │
-    ├── Completed → [Add Session Notes]
-    │       └── Notes Saved ✓
-    │
-    ├── NoShow → [Auto-notification sent]
-    │
-    └── Cancelled → [Logged with reason]
-```
+1. **Hero Banner Image** (1920x600px)
+   - Professional education theme
+   - Classroom or language learning imagery
+
+2. **Tutor Handbook** (PDF)
+   - Upload to Documents library
+
+3. **Session Note Guide** (PDF or page)
+   - Best practices for documentation
 
 ---
 
-## Notifications to Show
+## Prompts for Claude (Chrome Extension)
 
-- **Red Badge**: Pending session notes count
-- **Yellow Banner**: Student hasn't attended in 2+ weeks
-- **Info Banner**: Approaching max weekly hours
+**Initial Setup:**
+> "I'm customizing a SharePoint site for language tutors. I need a hero section, quick action cards showing today's sessions, a place to access session notes, and tutor-specific resources. Guide me through each web part."
+
+**Call to Action Cards:**
+> "How do I add Call to Action web parts in SharePoint to create clickable stat cards for 'Today's Sessions', 'Pending Notes', and 'Weekly Hours'?"
+
+**List Filtering:**
+> "I want to display only today's appointments from the Appointments list on the tutor home page. How do I create and apply a filtered view?"
+
+**Two-Column Layout:**
+> "How do I add a two-column section in SharePoint with different column widths (narrow left, wide right)?"
+
+**Session Notes Form:**
+> "How do I create a direct link to the SharePoint list new item form for SessionNotes?"
 
 ---
 
 ## Testing Checklist
 
-- [ ] Tutor sees only their appointments
-- [ ] Today's schedule shows correctly
-- [ ] Can mark session as Completed
-- [ ] Can mark session as No-Show
-- [ ] Session notes link works
-- [ ] Pending notes count accurate
-- [ ] Weekly hours calculation correct
-- [ ] Student list shows only assigned students
-- [ ] Navigation works correctly
-- [ ] Logout functions properly
+- [ ] Hero displays with correct title and button
+- [ ] Quick action cards link to correct destinations
+- [ ] Today's schedule list displays and filters correctly
+- [ ] Session notes link/section works
+- [ ] Resources links are accessible
+- [ ] Navigation updated for tutor workflow
+- [ ] Theme applied (scarlet or navy)
+- [ ] News/announcements show relevant content
+- [ ] Mobile view acceptable
+- [ ] Published and accessible to MARDET_Tutors group

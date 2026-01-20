@@ -1,443 +1,286 @@
-# Tutor Chief Landing Page Design Guide
+# SharePoint Site Design Guide: MARDET_TutorChiefs
 
-## Role: MARDET_TutorChiefs (~7 users)
-
-### User Profile
-- Senior leadership (MSgt, MGySgt, or senior civilians)
-- Oversee tutors and students for their language(s)
-- Need operational visibility and approval authority
-- Desktop-primary, may need quick mobile access for approvals
+## Purpose
+This guide helps you customize the SharePoint team site for the **MARDET_TutorChiefs** group (~7 users). Use this with Claude for Chrome to get step-by-step assistance modifying the page.
 
 ---
 
-## Landing Page Layout
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│  MARDET Language Tutoring              [Chief] [User] [Out] │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  Tutor Chief Dashboard                                      │
-│  MSgt Williams | Arabic Section                             │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌────────┐│
-│  │ TODAY       │ │ THIS WEEK   │ │ PENDING     │ │ ALERTS ││
-│  │             │ │             │ │ APPROVALS   │ │        ││
-│  │    12       │ │    68       │ │     3       │ │   2    ││
-│  │  Sessions   │ │  Sessions   │ │  Requests   │ │ Issues ││
-│  └─────────────┘ └─────────────┘ └─────────────┘ └────────┘│
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  PENDING APPROVALS                            [!] 3  │   │
-│  │                                                      │   │
-│  │  ☐ Extended Session - LCpl Wilson (Arabic)          │   │
-│  │    Requested by: SSgt Smith | 90 min session        │   │
-│  │    [Approve] [Deny] [View Details]                  │   │
-│  │                                                      │   │
-│  │  ☐ Off-Hours Request - PFC Martinez (Arabic)        │   │
-│  │    Requested by: GySgt Jones | Saturday 0900        │   │
-│  │    [Approve] [Deny] [View Details]                  │   │
-│  │                                                      │   │
-│  │  ☐ New Tutor Registration - SSgt Brown              │   │
-│  │    Languages: Arabic, Farsi                          │   │
-│  │    [Approve] [Deny] [View Details]                  │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│  ┌──────────────────────────┐ ┌────────────────────────┐   │
-│  │  TUTOR WORKLOAD          │ │  ATTENTION NEEDED      │   │
-│  │                          │ │                        │   │
-│  │  SSgt Smith    18/20 hrs │ │  ⚠ 2 No-shows today   │   │
-│  │  ████████████████░░ 90%  │ │  ⚠ 3 Notes pending    │   │
-│  │                          │ │  ⚠ 1 Student inactive │   │
-│  │  GySgt Jones   12/20 hrs │ │                        │   │
-│  │  ████████████░░░░░░ 60%  │ │  [View All Alerts]     │   │
-│  │                          │ │                        │   │
-│  │  SSgt Lee       8/20 hrs │ └────────────────────────┘   │
-│  │  ████████░░░░░░░░░░ 40%  │                              │
-│  │                          │                              │
-│  │  [View All Tutors]       │                              │
-│  └──────────────────────────┘                              │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │  DAILY OPERATIONS - Jan 14, 2025                     │   │
-│  │                                                      │   │
-│  │  Time    Tutor         Student        Status        │   │
-│  │  ──────────────────────────────────────────────────  │   │
-│  │  0900    SSgt Smith    LCpl Wilson    ✓ Completed   │   │
-│  │  0900    GySgt Jones   PFC Adams      ✓ Completed   │   │
-│  │  1030    SSgt Smith    PFC Martinez   ◷ In Progress │   │
-│  │  1030    SSgt Lee      Cpl Brown      ✓ Completed   │   │
-│  │  1300    GySgt Jones   LCpl Davis     ○ Scheduled   │   │
-│  │  1300    SSgt Smith    Cpl Thompson   ○ Scheduled   │   │
-│  │                                                      │   │
-│  │  [View Full Schedule] [Export Report]                │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤
-│ [Dashboard] [Approvals] [Tutors] [Students] [Reports] [⚙] │
-└─────────────────────────────────────────────────────────────┘
-```
+## Target Audience
+- Senior leadership (MSgt, MGySgt, senior civilians)
+- Oversee tutors and students in their language section
+- Need: operational visibility, approval queue, tutor workload, reports
 
 ---
 
-## Key Components
-
-### 1. Header Section
-**Elements:**
-- App logo/name
-- Role badge ("Chief")
-- User name
-- Logout
-
-**Power Fx:**
-```
-// Verify user is in TutorChiefs group
-Set(varIsTutorChief,
-    !IsBlank(LookUp(Tutors,
-        Email = User().Email &&
-        // Additional chief flag or role check
-        Status = "Active"
-    ))
-)
-
-// For group-based check (if using Azure AD groups)
-// This would be handled by app sharing - only MARDET_TutorChiefs can access
-```
-
-### 2. KPI Summary Cards
-**Elements:**
-- Today's sessions count
-- This week's sessions count
-- Pending approvals (with alert if > 0)
-- Issues/alerts count
-
-**Power Fx:**
-```
-// Today's sessions (for chief's language section)
-Set(varTodaySessions,
-    CountRows(
-        Filter(Appointments,
-            DateValue(AppointmentDate) = Today() &&
-            Status <> "Cancelled"
-            // Add language filter if chief is language-specific
-        )
-    )
-)
-
-// Pending approvals
-Set(varPendingApprovals,
-    CountRows(
-        Filter(ApprovalRequests,
-            Status = "Pending" &&
-            ApproverEmail = User().Email
-        )
-    )
-)
-
-// Alerts count
-Set(varAlerts,
-    CountRows(Filter(Appointments, Status = "NoShow" && DateValue(AppointmentDate) = Today())) +
-    CountRows(varPendingNotes) +
-    CountRows(varInactiveStudents)
-)
-```
-
-### 3. Pending Approvals Panel
-**Elements:**
-- List of requests awaiting approval
-- Request type, requester, brief description
-- Approve/Deny buttons
-- Link to details
-
-**Power Fx:**
-```
-// Approval requests for this chief
-Filter(ApprovalRequests,
-    Status = "Pending" &&
-    ApproverEmail = User().Email
-)
-
-// Approve button OnSelect
-Patch(ApprovalRequests,
-    ThisItem,
-    {
-        Status: "Approved",
-        ApproverResponse: "Approve",
-        ResponseDate: Now()
-    }
-);
-Notify("Request approved", NotificationType.Success);
-
-// Deny button OnSelect
-Set(varSelectedRequest, ThisItem);
-Set(varShowDenyDialog, true);
-// Dialog collects denial reason, then:
-Patch(ApprovalRequests,
-    varSelectedRequest,
-    {
-        Status: "Denied",
-        ApproverResponse: "Deny",
-        ApproverComments: varDenialReason,
-        ResponseDate: Now()
-    }
-);
-```
-
-### 4. Tutor Workload Panel
-**Elements:**
-- List of tutors in section
-- Hours worked / max hours
-- Visual progress bar
-- Warning if over 90% or under 30%
-
-**Power Fx:**
-```
-// Get tutors (filter by language if section-specific)
-AddColumns(
-    Filter(Tutors, Status = "Active"),
-    "WeeklyHours",
-        Sum(
-            Filter(Appointments,
-                TutorID.Id = ID &&
-                Status = "Completed" &&
-                AppointmentDate >= DateAdd(Today(), -Weekday(Today())+1, TimeUnit.Days) &&
-                AppointmentDate <= Today()
-            ),
-            Duration
-        ) / 60
-)
-
-// Progress bar width
-(ThisItem.WeeklyHours / ThisItem.MaxHoursPerWeek) * ProgressBarMaxWidth
-
-// Color based on utilization
-If(ThisItem.WeeklyHours / ThisItem.MaxHoursPerWeek > 0.9,
-    ColorValue("#FFC107"),  // Warning yellow - overloaded
-    If(ThisItem.WeeklyHours / ThisItem.MaxHoursPerWeek < 0.3,
-        ColorValue("#17A2B8"),  // Info blue - underutilized
-        ColorValue("#28A745")   // Green - healthy
-    )
-)
-```
-
-### 5. Attention Needed Panel
-**Elements:**
-- No-shows today
-- Pending session notes
-- Inactive students (no session in 3+ weeks)
-- Link to detailed alert view
-
-**Power Fx:**
-```
-// No-shows today
-CountRows(
-    Filter(Appointments,
-        Status = "NoShow" &&
-        DateValue(AppointmentDate) = Today()
-    )
-)
-
-// Pending notes (completed sessions without notes)
-CountRows(
-    Filter(Appointments,
-        Status = "Completed" &&
-        AppointmentDate >= DateAdd(Today(), -7, TimeUnit.Days) &&
-        IsBlank(LookUp(SessionNotes, AppointmentID.Id = ID))
-    )
-)
-
-// Inactive students (active status but no recent sessions)
-CountRows(
-    Filter(Students,
-        Status = "Active" &&
-        IsBlank(
-            LookUp(Appointments,
-                StudentID.Id = ID &&
-                AppointmentDate >= DateAdd(Today(), -21, TimeUnit.Days)
-            )
-        )
-    )
-)
-```
-
-### 6. Daily Operations Table
-**Elements:**
-- All sessions for today
-- Time, tutor, student, status
-- Quick status update capability
-- Export to Excel option
-
-**Power Fx:**
-```
-// Today's full schedule
-Sort(
-    Filter(Appointments,
-        DateValue(AppointmentDate) = Today()
-    ),
-    AppointmentDate,
-    SortOrder.Ascending
-)
-
-// Status icons
-Switch(ThisItem.Status,
-    "Completed", "✓",
-    "Scheduled", "○",
-    "NoShow", "✗",
-    "Cancelled", "—",
-    "◷"  // In progress (current time within session window)
-)
-```
-
-### 7. Bottom Navigation
-**Elements:**
-- Dashboard (current)
-- Approvals (approval queue)
-- Tutors (tutor management)
-- Students (student roster)
-- Reports (Power BI embed)
-- Settings (admin functions)
+## Current State (Default SharePoint)
+- Bland default team site
+- No leadership dashboard
+- No approval workflow visibility
+- No operational metrics
 
 ---
 
-## Approval Workflows
+## Desired Design
 
-### Extended Session Approval
+### Page Layout (Top to Bottom)
+
 ```
-Request Type: Extended Session
-Approver: NCOIC (Tutor Chief)
-Auto-approve if: Duration <= 90 minutes
-Require approval if: Duration > 90 minutes
+┌─────────────────────────────────────────────────────────────────┐
+│  HEADER SECTION - Compact Hero                                   │
+│  Title: "Tutor Chief Dashboard"                                  │
+│  Subtitle: "Operations Overview - [Today's Date]"                │
+│  Button: "Open Admin App" → Links to PowerApp                    │
+└─────────────────────────────────────────────────────────────────┘
 
-On Approve:
-- Update appointment duration
-- Notify tutor and student
-- Log approval
+┌─────────────────────────────────────────────────────────────────┐
+│  FOUR-COLUMN SECTION - KPI Cards                                 │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐           │
+│  │ TODAY    │ │ THIS     │ │ PENDING  │ │ ALERTS   │           │
+│  │   [#]    │ │ WEEK     │ │ APPROVAL │ │          │           │
+│  │ sessions │ │  [#]     │ │   [#]    │ │   [#]    │           │
+│  │          │ │ sessions │ │ requests │ │ issues   │           │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────┘           │
+└─────────────────────────────────────────────────────────────────┘
 
-On Deny:
-- Notify requester with reason
-- Log denial
-```
+┌─────────────────────────────────────────────────────────────────┐
+│  FULL WIDTH SECTION - Pending Approvals                          │
+│  Title: "⚠️ Pending Approvals" (highlighted if count > 0)        │
+│  [ApprovalRequests List - filtered to Status = Pending]          │
+│  Columns: Type, Requester, Date, Description, [Approve] [Deny]   │
+└─────────────────────────────────────────────────────────────────┘
 
-### Off-Hours Request
-```
-Request Type: Off-Hours
-Approver Chain: NCOIC → OIC (if weekend/holiday)
-Fields: Requested date/time, justification
+┌─────────────────────────────────────────────────────────────────┐
+│  TWO-COLUMN SECTION                                              │
+│  ┌───────────────────────────┐  ┌───────────────────────────┐   │
+│  │  TODAY'S OPERATIONS       │  │  TUTOR STATUS             │   │
+│  │                           │  │                           │   │
+│  │  [Appointments List -     │  │  [Tutors List showing     │   │
+│  │   Today's sessions        │  │   status and weekly hrs]  │   │
+│  │   all tutors]             │  │                           │   │
+│  │                           │  │  Name | Status | Hours    │   │
+│  │  Time|Tutor|Student|Status│  │  SSgt Smith | ✓ | 18/20   │   │
+│  └───────────────────────────┘  └───────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 
-On Approve (NCOIC):
-- If weekday evening: Complete
-- If weekend/holiday: Forward to OIC
+┌─────────────────────────────────────────────────────────────────┐
+│  TWO-COLUMN SECTION                                              │
+│  ┌───────────────────────────┐  ┌───────────────────────────┐   │
+│  │  QUICK ACTIONS            │  │  REPORTS                  │   │
+│  │                           │  │                           │   │
+│  │  📊 View Full Dashboard   │  │  📈 Weekly Operations     │   │
+│  │  👥 Manage Tutors         │  │  📊 Tutor Performance     │   │
+│  │  🎓 View All Students     │  │  📉 Student Progress      │   │
+│  │  📋 Session Notes Review  │  │  📑 Export Data           │   │
+│  │  ⚙️ System Settings       │  │                           │   │
+│  └───────────────────────────┘  └───────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 
-On Approve (OIC):
-- Create appointment
-- Notify all parties
-```
-
-### Registration Approval
-```
-Request Type: Student/Tutor Registration
-Approver: NCOIC
-Fields: User info from MS Form
-
-On Approve:
-- Create record in Students/Tutors list
-- Add user to appropriate M365 group
-- Send welcome email
+┌─────────────────────────────────────────────────────────────────┐
+│  FULL WIDTH SECTION - Alerts & Issues                            │
+│  Title: "Attention Needed"                                       │
+│  [List or text showing: No-shows today, Pending notes,           │
+│   Inactive students, Overloaded tutors]                          │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Data Access (Security)
+## Step-by-Step Instructions
 
-Tutor Chiefs can see:
-- All appointments (or filtered by their language section)
-- All tutors (or their section)
-- All students (or their section)
-- All session notes
-- All progress records
-- Approval requests assigned to them
+### Step 1: Enter Edit Mode
+1. Go to the TutorChiefs site home page
+2. Click **Edit**
 
-**Access Pattern:**
-```
-// If chiefs are section-specific (e.g., Arabic Chief)
-Set(varChiefLanguages, varCurrentTutor.Languages)
+### Step 2: Clear Default Content
+1. Remove all default web parts
+2. Start with blank canvas
 
-// Filter all data by those languages
-Filter(Students, Language in varChiefLanguages)
-Filter(Tutors, /* has overlap with */ varChiefLanguages)
-Filter(Appointments, /* student language in */ varChiefLanguages)
-```
+### Step 3: Add Compact Hero
+1. Click **+** → **Hero** web part
+2. Configure:
+   - Layout: **Full width** but with minimal height
+   - Or use **Text** web part with large heading instead
+   - **Title**: "Tutor Chief Dashboard"
+   - **Subtitle**: "Operations Overview"
+   - **Button**: "Open Admin App" → [PowerApp URL]
+   - Background: Dark scarlet or navy
+
+### Step 4: Add KPI Cards Section
+1. Click **+** → **Section** → **Four columns** (or use Vertical section)
+2. In each column, add **Call to action** or **Text** web part:
+
+   **Card 1 - Today:**
+   - Use Call to action web part
+   - Title: "Today"
+   - Add number placeholder (or link to PowerApp for live data)
+   - Button: "View Schedule"
+
+   **Card 2 - This Week:**
+   - Title: "This Week"
+   - Shows weekly session count
+   - Button: "View Calendar"
+
+   **Card 3 - Pending Approvals:**
+   - Title: "Pending"
+   - IMPORTANT: Make this stand out (different color if > 0)
+   - Button: "Review Approvals"
+
+   **Card 4 - Alerts:**
+   - Title: "Alerts"
+   - Shows count of issues needing attention
+   - Button: "View Alerts"
+
+**Alternative:** Use **Highlighted content** or **Countdown** web parts if available for dynamic numbers.
+
+### Step 5: Add Pending Approvals Section
+1. Click **+** → **Section** → **Full width**
+2. Add **Text** web part:
+   - Heading 2: "⚠️ Pending Approvals"
+3. Add **List** web part:
+   - Select: **ApprovalRequests** list
+   - Create view: "Pending for Chief"
+     - Filter: Status = Pending
+     - Sort: RequestDate descending
+     - Columns: RequestType, RequestedBy, RequestDate, Description
+   - Enable Quick Edit if you want inline approve/deny (limited in SP)
+
+**Note:** For actual Approve/Deny buttons, you'll need to link to PowerApp or use Power Automate with approval actions.
+
+### Step 6: Add Operations & Tutor Status Section
+1. Click **+** → **Section** → **Two columns**
+2. LEFT column: Add **List** web part
+   - Title: "Today's Operations"
+   - Select: **Appointments** list
+   - View: "Today All Tutors"
+     - Filter: Date = [Today]
+     - Sort: Time ascending
+     - Columns: Time, TutorID, StudentID, Status
+
+3. RIGHT column: Add **List** web part
+   - Title: "Tutor Status"
+   - Select: **Tutors** list
+   - View: "Active with Hours"
+     - Filter: Status = Active
+     - Columns: FullName, Status, MaxHoursPerWeek
+   - Note: Weekly hours calculation requires PowerApp/Power BI
+
+### Step 7: Add Quick Actions & Reports Section
+1. Click **+** → **Section** → **Two columns**
+2. LEFT column: Add **Quick Links** web part
+   - Title: "Quick Actions"
+   - Layout: **List**
+   - Links:
+     | Title | Icon | Link |
+     |-------|------|------|
+     | View Full Dashboard | ViewAll | [PowerApp] |
+     | Manage Tutors | People | [Tutors list] |
+     | View All Students | People | [Students list] |
+     | Session Notes Review | Document | [SessionNotes list] |
+     | System Settings | Settings | [Site settings or config] |
+
+3. RIGHT column: Add **Quick Links** web part
+   - Title: "Reports"
+   - Layout: **List**
+   - Links:
+     | Title | Link |
+     |-------|------|
+     | Weekly Operations Report | [Power BI URL] |
+     | Tutor Performance | [Power BI URL] |
+     | Student Progress | [Power BI URL] |
+     | Export Data | [Export flow or manual instructions] |
+
+### Step 8: Add Alerts Section
+1. Click **+** → **Section** → **Full width**
+2. Add **Text** web part:
+   - Heading 2: "Attention Needed"
+3. Options:
+   - **Static text** with links to investigate each alert type
+   - **Highlighted content** web part showing items needing attention
+   - **Embed** Power BI visual showing alerts
+
+   Sample static content:
+   ```
+   Review these areas regularly:
+   • [No-shows Today] - Appointments marked NoShow
+   • [Pending Session Notes] - Sessions without documentation
+   • [Inactive Students] - No sessions in 3+ weeks
+   • [Tutor Workload] - Tutors over 90% capacity
+   ```
+
+### Step 9: Update Navigation
+1. Edit left navigation:
+   - Home
+   - Approvals → [ApprovalRequests list or PowerApp]
+   - Tutors → [Tutors list]
+   - Students → [Students list]
+   - Schedule → [Appointments list]
+   - Reports → [Power BI]
+   - Settings
+
+### Step 10: Apply Theme
+1. **Settings** → **Change the look**
+2. Consider a distinguished theme for leadership:
+   - Primary: **#003366** (Navy) or **#1a1a2e** (Dark)
+   - Accent: **#FFD700** (Gold)
+3. Or maintain scarlet: **#CC0000**
+
+### Step 11: Publish
+1. Click **Publish**
+2. Verify all list views work
+3. Test approval workflow links
 
 ---
 
-## Quick Actions
-
-### Reassign Appointment
-```
-// If tutor is unavailable, reassign to another
-Set(varShowReassignDialog, true);
-Set(varSelectedAppointment, ThisItem);
-// Dialog shows available tutors
-// On select:
-Patch(Appointments, varSelectedAppointment, {TutorID: varNewTutor});
-// Notify both tutors and student
-```
-
-### Add Tutor to Schedule
-```
-// Quick action to create appointment
-Navigate(QuickBookScreen, ScreenTransition.Cover,
-    {
-        PreselectedTutor: ThisItem,
-        PreselectedDate: Today()
-    }
-)
-```
-
-### Export Daily Report
-```
-// Generate CSV/Excel of today's operations
-// Use Power Automate flow triggered by button
-```
-
----
-
-## Color Scheme
+## Color Reference
 
 | Element | Color | Hex |
 |---------|-------|-----|
-| Header | Marine Corps Scarlet | #CC0000 |
-| Chief Badge | Gold | #FFD700 |
-| Approval Pending | Orange | #FFC107 |
-| Alert/Warning | Red | #DC3545 |
-| Success/Approved | Green | #28A745 |
-| Info | Blue | #17A2B8 |
-| Utilization High | Yellow | #FFC107 |
-| Utilization Low | Light Blue | #17A2B8 |
-| Utilization Normal | Green | #28A745 |
+| Primary/Header | Navy or Dark | #003366 or #1a1a2e |
+| Accent | Gold | #FFD700 |
+| Alert/Urgent | Red | #DC3545 |
+| Warning | Orange | #FFC107 |
+| Success | Green | #28A745 |
+| KPI Card BG | White/Light | #FFFFFF |
 
 ---
 
-## Reports Quick Access
+## Assets Needed
 
-Embed or link to Power BI dashboards:
-- **Operations Dashboard**: Today's metrics, week trends
-- **Tutor Performance**: Utilization, session quality
-- **Student Progress**: DLPT trends, at-risk students
+1. **Hero Banner** (optional - can use solid color)
+2. **Power BI Dashboard URLs** for embedding
+3. **Approval workflow** configured in Power Automate
+
+---
+
+## Prompts for Claude (Chrome Extension)
+
+**Initial Setup:**
+> "I'm setting up a SharePoint dashboard for leadership/managers. I need KPI summary cards at the top, a pending approvals list in the middle, and quick access to team status and reports. Walk me through this layout."
+
+**KPI Cards:**
+> "How can I create visual KPI cards in SharePoint that display counts from my lists? I want to show Today's Sessions, Pending Approvals, and Alert counts."
+
+**Approval List:**
+> "I have an ApprovalRequests SharePoint list. How do I embed it on my home page filtered to only show items where Status equals 'Pending'?"
+
+**Multiple List Views:**
+> "I need to show two different SharePoint lists side by side - one showing today's appointments and another showing tutor status. How do I set this up in a two-column section?"
+
+**Power BI Embed:**
+> "How do I embed a Power BI report into a SharePoint page for my leadership dashboard?"
 
 ---
 
 ## Testing Checklist
 
-- [ ] KPI cards show accurate counts
-- [ ] Pending approvals list is correct
-- [ ] Approve/Deny workflow functions
-- [ ] Tutor workload calculations accurate
-- [ ] Alerts show correct issues
-- [ ] Daily schedule displays all sessions
-- [ ] Can reassign appointments
-- [ ] Reports link/embed works
-- [ ] Navigation functions correctly
-- [ ] Only chiefs can access this screen
+- [ ] Hero/header displays correctly
+- [ ] KPI cards visible (even if static placeholders)
+- [ ] Pending approvals list shows filtered data
+- [ ] Today's operations displays correctly
+- [ ] Tutor status list shows active tutors
+- [ ] Quick action links work
+- [ ] Report links open Power BI
+- [ ] Navigation updated for chief workflow
+- [ ] Theme applied (navy/gold or scarlet/gold)
+- [ ] Mobile view acceptable
+- [ ] Published and accessible to MARDET_TutorChiefs group
