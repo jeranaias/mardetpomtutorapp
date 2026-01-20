@@ -141,7 +141,7 @@ EXTERNAL (INFORMATIONAL ONLY):
                        ▼
          ┌─────────────────────────────┐
          │   P1: Authenticate User     │
-         │   (Azure AD / CAC)          │
+         │   (Azure AD / MFA)          │
          └──────────────┬──────────────┘
                         │ User Identity
                         ▼
@@ -306,7 +306,7 @@ EXTERNAL (INFORMATIONAL ONLY):
 | Media Protection (MP) | 3 | N/A Cloud only |
 | Physical and Environmental (PE) | 10 | ✅ Microsoft data centers |
 | Planning (PL) | 2 | ✅ This document |
-| Personnel Security (PS) | 5 | ✅ CAC requirement |
+| Personnel Security (PS) | 5 | ✅ MFA requirement (dliflc.edu) |
 | Risk Assessment (RA) | 3 | ✅ Section 4 |
 | System and Services Acquisition (SA) | 10 | ✅ M365 GCC |
 | System and Communications Protection (SC) | 21 | ✅ 21/21 |

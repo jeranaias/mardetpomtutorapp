@@ -404,7 +404,7 @@ This system was designed to be easily adaptable for other military units. Here's
 
 ```
 Recommended naming convention:
-pa.svc.[unit].[app]@[domain].mil
+pa.svc.[unit].[app]@dliflc.edu
 
 Example:
 pa.svc.mardet.tutoring@dliflc.edu

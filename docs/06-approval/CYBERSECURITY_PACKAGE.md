@@ -232,7 +232,7 @@ The system collects only the minimum data necessary for functionality:
 ### 5.1 DoD 8500.01 Cybersecurity Requirements
 
 - [✅] IA-1: Identification and Authentication Policy
-- [✅] IA-2: Multi-Factor Authentication (CAC)
+- [✅] IA-2: Multi-Factor Authentication (MFA)
 - [✅] AC-2: Account Management (service account)
 - [✅] AC-3: Access Enforcement (RBAC)
 - [✅] AC-6: Least Privilege
@@ -539,7 +539,7 @@ The system collects only the minimum data necessary for functionality:
 
 **Technical Lead:**
 - [System Developer]
-- Email: [Redacted]@usmc.mil
+- Email: [Redacted]@dliflc.edu
 - Role: Developer and Administrator (through contract end)
 
 **DCSIT Support:**
