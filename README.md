@@ -69,12 +69,12 @@ A fully integrated Microsoft Power Platform solution that:
 
 ### User Roles
 
-| Role | Capabilities |
-|------|-------------|
-| **Student** | Book sessions, view schedule, track progress |
-| **Tutor** | Manage availability, write session notes, view student progress |
-| **Admin** | Full system access, reporting, user management |
-| **Leadership** | Executive dashboards and program metrics |
+| Role | Capabilities | Group |
+|------|-------------|-------|
+| **Student** | Book sessions, view schedule, track progress | MARDET_Students (~400) |
+| **Tutor** | Manage availability, write session notes, view student progress | MARDET_Tutors (~30) |
+| **Tutor Chief** | Approve requests, manage tutors, operational oversight | MARDET_TutorChiefs (~7) |
+| **Admin** | Full system access, reporting, user management | MARDET_Admins (~3) |
 
 ### Languages Supported
 
@@ -118,8 +118,8 @@ The system supports all DLIFLC language programs including:
 │         │                    │                                   │
 │         ▼                    ▼                                   │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │              POWER AUTOMATE (5 Workflows)                │   │
-│  │  Confirmations │ Reminders │ No-Show │ Status │ Digest   │   │
+│  │              POWER AUTOMATE (13 Workflows)               │   │
+│  │  Confirmations │ Reminders │ No-Show │ Approvals │ More  │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                              │                                   │
 │                              ▼                                   │
@@ -195,7 +195,7 @@ Complete data model with 6 SharePoint lists and PowerShell deployment script.
 **Build Time:** 10-15 hours
 
 ### [Segment 4: Power Automate](docs/04-automate/)
-5 automated workflows with professional HTML email templates.
+13 automated workflows with professional HTML email templates.
 
 | File | Description |
 |------|-------------|
@@ -300,12 +300,13 @@ Week 9   ──► Go-live
 ### Phase 1: Preparation
 
 1. **Security Approval** - Submit ATO package from Segment 6
-2. **Create Service Account** - `pa.svc.[unit].tutoring@dliflc.edu`
+2. **Create Service Account** - `pa.svc.mardet.tutoring@dliflc.edu`
 3. **Create SharePoint Site** - Dedicated site for the application
 4. **Create Azure AD Groups**:
-   - `SG-Tutoring-Students`
-   - `SG-Tutoring-Tutors`
-   - `SG-Tutoring-Admins`
+   - `MARDET_Students` (~400 users)
+   - `MARDET_Tutors` (~30 users)
+   - `MARDET_TutorChiefs` (~7 users)
+   - `MARDET_Admins` (~3 users)
 
 ### Phase 2: Build (While Awaiting Approval)
 
@@ -567,6 +568,6 @@ To all the tutors and language instructors who dedicate themselves to preparing 
 
 ---
 
-**Document Version:** 1.0
-**Last Updated:** December 2025
+**Document Version:** 1.1
+**Last Updated:** January 2026
 **Classification:** UNCLASSIFIED
